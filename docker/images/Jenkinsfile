@@ -1,9 +1,12 @@
+import static groovy.json.JsonOutput.*
+
 node ('docker') {
     withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
         sh 'echo $PASS | docker login -u $USER --password-stdin'
     }
 
     Map scmVars = checkout scm
+    echo prettyPrint(toJson(scmVars))
     
     List imagesToBuild = []
     if (!scmVars.containsKey('GIT_PREVIOUS_COMMIT') || !hasSuccessfulBuild()) {
@@ -18,7 +21,7 @@ node ('docker') {
     }
 
     if (imagesToBuild) {
-        echo "Building images: ${imagesToBuild.toString()}"
+        echo "Building images: \n${prettyPrint(toJson(imagesToBuild))}"
     } else {
         echo "No images to build"
     }
