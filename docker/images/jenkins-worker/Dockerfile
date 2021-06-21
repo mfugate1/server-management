@@ -39,7 +39,7 @@ ENV DISPLAY=:99
 RUN pip install --upgrade pip
 
 # install selenium
-RUN pip install selenium requests urllib3 garminconnect
+RUN pip install selenium requests urllib3 garminconnect pymysql
 
 # install chromedriver
 RUN wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE`/chromedriver_linux64.zip
