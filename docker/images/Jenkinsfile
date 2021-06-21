@@ -1,5 +1,6 @@
 properties (
     [
+        disableConcurrentBuilds(),
         pipelineTriggers([
             [$class: 'GenericTrigger',
                 token: 'Jenkins-Worker-Docker-Build',
