@@ -5,6 +5,7 @@ node ('docker') {
         sh 'echo $PASS | docker login -u $USER --password-stdin'
     }
 
-    checkout scm
+    Map scmVars = checkout scm
+    echo scmVars.toString()
 }
 
