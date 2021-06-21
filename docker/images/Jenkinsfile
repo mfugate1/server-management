@@ -1,11 +1,54 @@
-String dockerCredentialsId = '3a532438-50f9-48ad-acbd-56f4343da506'
-
 node ('docker') {
-    withCredentials([usernamePassword(credentialsId: dockerCredentialsId, usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+    withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
         sh 'echo $PASS | docker login -u $USER --password-stdin'
     }
 
     Map scmVars = checkout scm
-    echo scmVars.toString()
+    
+    List imagesToBuild = []
+    if (!scmVars.containsKey('GIT_PREVIOUS_COMMIT') || !hasSuccessfulBuild()) {
+        echo "No previous commit or no previously successful build; going to build all docker images"
+        imagesToBuild = findFiles(glob: 'docker/images/**/Dockerfile').collect{it.path}
+    } else {
+        getModifiedFiles().each {
+            if (it.endsWith('/Dockerfile')) {
+                imagesToBuild += it
+            }
+        }
+    }
+
+    if (imagesToBuild) {
+        echo "Building images: ${imagesToBuild.toString()}"
+    } else {
+        echo "No images to build"
+    }
 }
 
+@NonCPS
+List getModifiedFiles() {
+    List files = []
+    def build = currentBuild
+    while (build != null && build.result != 'SUCCESS') {
+        build.changeSets.each { changeSet ->
+            changeSet.items.each {
+                files += it.affectedPaths
+            }
+        }
+        build = build.previousBuild
+    }
+    return files
+}
+
+@NonCPS
+boolean hasSuccessfulBuild() {
+    boolean hasSuccess = false
+    def build = currentBuild
+    while (build != null) {
+        if (build.result == 'SUCCESS') {
+            hasSuccess = true
+            break
+        }
+        build = build.previousBuild
+    }
+    return hasSuccess
+}
