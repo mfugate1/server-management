@@ -5,6 +5,13 @@ properties (
                 token: 'Jenkins-Worker-Docker-Build',
                 causeString: 'Github Webhook'
             ]
+        ]),
+        parameters([
+            booleanParam(
+                name: 'forceBuilds',
+                defaultValue: false,
+                description: 'Enable this parameter to force all docker images to be built and pushed'
+            )
         ])
     ]
 )
@@ -14,8 +21,8 @@ node ('docker') {
     echo(scmVars, true)
     
     List imagesToBuild = []
-    if (!scmVars.containsKey('GIT_PREVIOUS_COMMIT') || !hasSuccessfulBuild()) {
-        echo "No previous commit or no previously successful build; going to build all docker images"
+    if (!scmVars.containsKey('GIT_PREVIOUS_COMMIT') || !hasSuccessfulBuild() || params.forceBuilds) {
+        echo "No previous commit or no previously successful build or force build parameter was true; going to build all docker images"
         imagesToBuild = findFiles(glob: 'docker/images/**/Dockerfile').collect{it.path}
     } else {
         getModifiedFiles().each {
