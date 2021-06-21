@@ -6,7 +6,7 @@ node ('docker') {
     }
 
     Map scmVars = checkout scm
-    echo prettyPrint(toJson(scmVars))
+    echo(scmVars, true)
     
     List imagesToBuild = []
     if (!scmVars.containsKey('GIT_PREVIOUS_COMMIT') || !hasSuccessfulBuild()) {
@@ -21,37 +21,8 @@ node ('docker') {
     }
 
     if (imagesToBuild) {
-        echo "Building images: \n${prettyPrint(toJson(imagesToBuild))}"
+        echo(imagesToBuild, true, "Building images:")
     } else {
         echo "No images to build"
     }
-}
-
-@NonCPS
-List getModifiedFiles() {
-    List files = []
-    def build = currentBuild
-    while (build != null && build.result != 'SUCCESS') {
-        build.changeSets.each { changeSet ->
-            changeSet.items.each {
-                files += it.affectedPaths
-            }
-        }
-        build = build.previousBuild
-    }
-    return files
-}
-
-@NonCPS
-boolean hasSuccessfulBuild() {
-    boolean hasSuccess = false
-    def build = currentBuild
-    while (build != null) {
-        if (build.result == 'SUCCESS') {
-            hasSuccess = true
-            break
-        }
-        build = build.previousBuild
-    }
-    return hasSuccess
 }
