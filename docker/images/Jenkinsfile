@@ -1,3 +1,14 @@
+properties (
+    [
+        pipelineTriggers([
+            [$class: 'GenericTrigger',
+                token: 'Jenkins-Worker-Docker-Build',
+                causeString: 'Github Webhook'
+            ]
+        ])
+    ]
+)
+
 node ('docker') {
     Map scmVars = checkout scm
     echo(scmVars, true)
@@ -29,7 +40,7 @@ node ('docker') {
     imagesToBuild.each {
         String imageName = "${user}/${it.tokenize('/')[-2]}:latest"
         dir (it - '/Dockerfile') {
-            sh "docker build -t ${imageName} ."
+            sh "docker build --no-cache -t ${imageName} ."
             sh "docker push ${imageName}"
         }
     }
