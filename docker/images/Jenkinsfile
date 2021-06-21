@@ -1,10 +1,4 @@
-import static groovy.json.JsonOutput.*
-
 node ('docker') {
-    withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-        sh 'echo $PASS | docker login -u $USER --password-stdin'
-    }
-
     Map scmVars = checkout scm
     echo(scmVars, true)
     
@@ -20,9 +14,23 @@ node ('docker') {
         }
     }
 
-    if (imagesToBuild) {
-        echo(imagesToBuild, true, "Building images:")
-    } else {
+    if (!imagesToBuild) {
         echo "No images to build"
+        return
+    }
+
+    String user
+    withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+        sh 'echo $PASS | docker login -u $USER --password-stdin'
+        user = USER
+    }
+
+    echo(imagesToBuild, true, "Building images:")
+    imagesToBuild.each {
+        String imageName = "${user}/${it.tokenize('/')[-2]}:latest"
+        dir (it - '/Dockerfile') {
+            sh "docker build -t ${imageName} ."
+            sh "docker push ${imageName}"
+        }
     }
 }
