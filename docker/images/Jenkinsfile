@@ -1,0 +1,10 @@
+String dockerCredentialsId = '3a532438-50f9-48ad-acbd-56f4343da506'
+
+node ('docker') {
+    withCredentials([usernamePassword(credentialsId: dockerCredentialsId, usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+        sh 'echo $PASS | docker login -u $USER --password-stdin'
+    }
+
+    checkout scm
+}
+
