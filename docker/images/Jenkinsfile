@@ -3,7 +3,7 @@ properties (
         disableConcurrentBuilds(),
         pipelineTriggers([
             [$class: 'GenericTrigger',
-                token: 'Jenkins-Worker-Docker-Build',
+                token: 'Docker-Images-Build',
                 causeString: 'Github Webhook'
             ]
         ]),
