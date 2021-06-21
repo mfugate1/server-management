@@ -47,7 +47,7 @@ node ('docker') {
     imagesToBuild.each {
         String imageName = "${user}/${it.tokenize('/')[-2]}:latest"
         dir (it - '/Dockerfile') {
-            sh "docker build --no-cache -t ${imageName} ."
+            sh "docker build --no-cache --pull -t ${imageName} ."
             sh "docker push ${imageName}"
         }
     }
