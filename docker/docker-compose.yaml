@@ -1,0 +1,101 @@
+version: '3.2'
+services:
+  appdaemon:
+    container_name: appdaemon
+    restart: unless-stopped
+    image: mfugate/appdaemon:4.0.5
+    volumes:
+      - /docker/appdaemon/secrets.yaml:/conf/secrets.yaml
+      - /docker/appdaemon/apps/secrets.py:/conf/apps/secrets.py
+    ports:
+      - "5050:5050"
+  certbot:
+    container_name: certbot
+    restart: unless-stopped
+    image: certbot/certbot:v1.16.0
+    volumes:
+      - /docker/certbot/conf:/etc/letsencrypt
+      - /docker/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+  duplicati:
+    container_name: duplicati
+    restart: unless-stopped
+    image: duplicati/duplicati:canary
+    volumes: 
+      - /docker/duplicati:/data
+      - /docker:/docker
+    ports:
+      - "8200:8200"
+  git:
+    container_name: git
+    restart: unless-stopped
+    image: jkarlos/git-server-docker
+    volumes:
+      - /docker/git/keys:/git-server/keys
+      - /docker/git/repos:/git-server/repos
+    ports:
+      - "8209:22"
+  home-assistant:
+    container_name: home-assistant
+    restart: unless-stopped
+    image: homeassistant/home-assistant:2021.6.5
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
+    volumes:
+      - /docker/zwave-config:/zwave-config
+      - /docker/home-assistant:/config
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/localtime:/etc/localtime:ro
+    network_mode: host
+    privileged: true
+  mosquitto:
+    container_name: mosquitto
+    restart: unless-stopped
+    image: eclipse-mosquitto:2.0.11
+    volumes:
+      - /docker/server-management/config/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+  nginx:
+    container_name: nginx
+    restart: unless-stopped
+    image: nginx:1.21.0-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /docker/nginx:/etc/nginx/conf.d
+      - /docker/certbot/conf:/etc/letsencrypt
+      - /docker/certbot/www:/var/www/certbot
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+  unifi:
+    container_name: unifi
+    restart: unless-stopped
+    image: jacobalberty/unifi:6.2.25
+    volumes:
+      - /docker/unifi:/unifi
+    environment:
+      - RUNAS_UID0=false
+      - TZ=America/New_York
+      - UNIFI_UID=1000
+      - UNIFI_GID=1000
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+      - "8843:8843"
+      - "8880:8880"
+      - "3478:3478/tcp"
+      - "3478:3478/udp"
+      - "6789:6789"
+      - "10001:10001"
+volumes:
+  media_storage:
+    driver_opts:
+      type: "nfs"
+      o: "addr=192.168.1.81,nolock,soft,rw"
+      device: ":/mnt/media_storage"
+  mosquitto_data:
+  mosquitto_log:
