@@ -12,7 +12,7 @@ services:
   certbot:
     container_name: certbot
     restart: unless-stopped
-    image: certbot/certbot:v1.20.0
+    image: certbot/certbot:v1.21.0
     volumes:
       - /docker/certbot/conf:/etc/letsencrypt
       - /docker/certbot/www:/var/www/certbot
@@ -42,7 +42,7 @@ services:
   mosquitto:
     container_name: mosquitto
     restart: unless-stopped
-    image: eclipse-mosquitto:2.0.12
+    image: eclipse-mosquitto:2.0.13
     volumes:
       - /docker/server-management/config/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
       - mosquitto_data:/mosquitto/data
