@@ -33,7 +33,6 @@ services:
     devices:
       - /dev/ttyACM0:/dev/ttyACM0
     volumes:
-      - /docker/zwave-config:/zwave-config
       - /docker/home-assistant:/config
       - /var/run/docker.sock:/var/run/docker.sock
       - /etc/localtime:/etc/localtime:ro
