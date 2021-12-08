@@ -29,7 +29,7 @@ services:
   home-assistant:
     container_name: home-assistant
     restart: unless-stopped
-    image: homeassistant/home-assistant:2021.11.2
+    image: homeassistant/home-assistant:2021.11.5
     devices:
       - /dev/ttyACM0:/dev/ttyACM0
     volumes:
@@ -41,7 +41,7 @@ services:
   mosquitto:
     container_name: mosquitto
     restart: unless-stopped
-    image: eclipse-mosquitto:2.0.13
+    image: eclipse-mosquitto:2.0.14
     volumes:
       - /docker/server-management/config/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
       - mosquitto_data:/mosquitto/data
@@ -52,7 +52,7 @@ services:
   nginx:
     container_name: nginx
     restart: unless-stopped
-    image: nginx:1.21.3-alpine
+    image: nginx:1.21.4-alpine
     ports:
       - "80:80"
       - "443:443"
@@ -64,7 +64,7 @@ services:
   unifi:
     container_name: unifi
     restart: unless-stopped
-    image: jacobalberty/unifi:v6.4.54
+    image: jacobalberty/unifi:v6.5.53
     volumes:
       - /docker/unifi:/unifi
     environment:
