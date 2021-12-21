@@ -17,15 +17,6 @@ services:
       - /docker/certbot/conf:/etc/letsencrypt
       - /docker/certbot/www:/var/www/certbot
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-  duplicati:
-    container_name: duplicati
-    restart: unless-stopped
-    image: duplicati/duplicati:canary
-    volumes: 
-      - /docker/duplicati:/data
-      - /docker:/docker
-    ports:
-      - "8200:8200"
   home-assistant:
     container_name: home-assistant
     restart: unless-stopped
