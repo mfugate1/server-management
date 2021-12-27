@@ -23,14 +23,12 @@ RUN apt -yqq update && apt -yqq upgrade && apt-get -yqq --no-install-recommends 
       ca-certificates \
       xclip \
       google-chrome-stable \
-      unzip
+      unzip \
+      rsync
 
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 RUN echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 RUN apt -yqq update && apt -yqq install docker-ce docker-ce-cli containerd.io
-
-# Build and install the lastpass cli
-RUN git clone https://github.com/lastpass/lastpass-cli.git && cd lastpass-cli && make && cp build/lpass /usr/local/bin
 
 # set display port to avoid crash
 ENV DISPLAY=:99

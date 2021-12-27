@@ -1,4 +1,4 @@
-version: '3.2'
+version: "3.2"
 services:
   appdaemon:
     container_name: appdaemon
@@ -25,6 +25,7 @@ services:
       - /dev/ttyACM0:/dev/ttyACM0
     volumes:
       - /docker/home-assistant:/config
+      - /docker/home-assistant-test:/test-config
       - /var/run/docker.sock:/var/run/docker.sock
       - /etc/localtime:/etc/localtime:ro
     network_mode: host
