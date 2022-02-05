@@ -1,18 +1,9 @@
 version: "3.2"
 services:
-  appdaemon:
-    container_name: appdaemon
-    restart: unless-stopped
-    image: mfugate/appdaemon:4.0.5
-    volumes:
-      - /docker/appdaemon/secrets.yaml:/conf/secrets.yaml
-      - /docker/appdaemon/apps/secrets.py:/conf/apps/secrets.py
-    ports:
-      - "5050:5050"
   certbot:
     container_name: certbot
     restart: unless-stopped
-    image: certbot/certbot:v1.21.0
+    image: certbot/certbot:${CERTBOT_VERSION}
     volumes:
       - /docker/certbot/conf:/etc/letsencrypt
       - /docker/certbot/www:/var/www/certbot
@@ -20,7 +11,7 @@ services:
   home-assistant:
     container_name: home-assistant
     restart: unless-stopped
-    image: homeassistant/home-assistant:2021.12.7
+    image: homeassistant/home-assistant:${HASS_VERSION}
     devices:
       - /dev/ttyACM0:/dev/ttyACM0
     volumes:
@@ -33,7 +24,7 @@ services:
   mosquitto:
     container_name: mosquitto
     restart: unless-stopped
-    image: eclipse-mosquitto:2.0.14
+    image: eclipse-mosquitto:${MOSQUITTO_VERSION}
     volumes:
       - /docker/server-management/config/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
       - mosquitto_data:/mosquitto/data
@@ -44,7 +35,7 @@ services:
   nginx:
     container_name: nginx
     restart: unless-stopped
-    image: nginx:1.21.4-alpine
+    image: nginx:${NGINX_VERSION}-alpine
     ports:
       - "80:80"
       - "443:443"
@@ -56,7 +47,7 @@ services:
   unifi:
     container_name: unifi
     restart: unless-stopped
-    image: jacobalberty/unifi:v6.5.55
+    image: jacobalberty/unifi:${UNIFI_VERSION}
     volumes:
       - /docker/unifi:/unifi
     environment:
