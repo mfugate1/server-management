@@ -8,8 +8,9 @@ pipelineJob ('Update-Docker1-Versions') {
                         credentials('github-ssh')
                     }
                     extensions {
-                        localBranch('main')
+                        localBranch()
                     }
+                    branch('main')
                 }
                 lightweight()
                 scriptPath('docker/Jenkinsfile')
