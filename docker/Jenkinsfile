@@ -80,7 +80,7 @@ node ('built-in') {
         state = getHassEntityState('sensor.docker_nginx', token)
         if (state.attributes.image.split(':')[1].split('-')[0] != latestNginxVersion) {
             updateAvailable = true
-            versions.UNIFI_VERSION = latestUnifiVersion
+            versions.NGINX_VERSION = latestUnifiVersion
         }
 
     }
@@ -90,8 +90,13 @@ node ('built-in') {
             file: 'docker/.env',
             text: versions.collect{"${it.key}=${it.value}"}.join('\n')
         )
+        sh 'git config --global user.email jenkins@overlordserver.ddns.net'
+        sh 'git config --global user.name Jenkins'
         sh 'git add docker/.env; git commit -m"Automated container version update"'
-        sh "git push ${scmVars.GIT_URL}"
+
+        sshagent (credentials: ['github-ssh']) {
+            sh "git push ${scmVars.GIT_URL} ${scmVars.GIT_BRANCH - 'origin/'}"
+        }
     }
 
     cleanWs()

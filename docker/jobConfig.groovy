@@ -4,7 +4,8 @@ pipelineJob ('Update-Docker1-Versions') {
             scm {
                 git {
                     remote {
-                        url('https://github.com/mfugate1/server-management.git')
+                        github('mfugate1/server-management', 'ssh', 'github.com')
+                        credentials('github-ssh')
                     }
                     branch('main')
                 }
