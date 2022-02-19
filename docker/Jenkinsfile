@@ -92,7 +92,7 @@ node ("built-in") {
         )
         sh "git config --global user.email jenkins@overlordserver.ddns.net"
         sh "git config --global user.name Jenkins"
-        sh "git add docker/.env; git commit -m"Automated container version update""
+        sh "git add docker/.env; git commit -m'Automated container version update'"
 
         sshagent (credentials: ["github-ssh"]) {
             sh "git push ${scmVars.GIT_URL} ${scmVars.GIT_BRANCH - "origin/"}"
