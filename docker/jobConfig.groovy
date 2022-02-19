@@ -7,7 +7,9 @@ pipelineJob ('Update-Docker1-Versions') {
                         github('mfugate1/server-management', 'ssh', 'github.com')
                         credentials('github-ssh')
                     }
-                    branch('main')
+                    extensions {
+                        localBranch('main')
+                    }
                 }
                 lightweight()
                 scriptPath('docker/Jenkinsfile')
