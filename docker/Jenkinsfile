@@ -31,7 +31,7 @@ node ('built-in') {
             sh (
                 script: 'git tag --list',
                 returnStdout: true
-            ).tokenize('\n').findAll{it.startsWith('v')}.collect{it - 'v'}
+            ).tokenize('\n').findAll{it.startsWith('v') && !it.endsWith('-rc')}.collect{it - 'v'}
         )[-1]
     }
 
