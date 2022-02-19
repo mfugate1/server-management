@@ -1,84 +1,84 @@
-node ('built-in') {
+node ("built-in") {
     Map scmVars = checkout scm
 
-    Map versions = loadEnvVars(readFile(file: 'docker/.env'))
+    Map versions = loadEnvVars(readFile(file: "docker/.env"))
 
     boolean updateAvailable = false
 
     String latestMosquittoVersion
-    dir ('mosquitto') {
+    dir ("mosquitto") {
         git (
-            url: 'https://github.com/eclipse/mosquitto.git',
+            url: "https://github.com/eclipse/mosquitto.git",
             changelog: false,
             poll: false
         )
 
         latestMosquittoVersion = sh (
-            script: 'git describe --abbrev=0',
+            script: "git describe --abbrev=0",
             returnStdout: true
-        ) - 'v'
+        ) - "v"
     }
 
     String latestUnifiVersion
-    dir ('unifi') {
+    dir ("unifi") {
         git (
-            url: 'https://github.com/jacobalberty/unifi-docker.git',
+            url: "https://github.com/jacobalberty/unifi-docker.git",
             changelog: false,
             poll: false
         )
 
-        latestUnifiVersion = 'v' + sortVersions(
+        latestUnifiVersion = "v" + sortVersions(
             sh (
-                script: 'git tag --list',
+                script: "git tag --list",
                 returnStdout: true
-            ).tokenize('\n').findAll{it.startsWith('v') && !it.endsWith('-rc')}.collect{it - 'v'}
+            ).tokenize("\n").findAll{it.startsWith("v") && !it.endsWith("-rc")}.collect{it - "v"}
         )[-1]
     }
 
     String latestNginxVersion
-    dir ('nginx') {
+    dir ("nginx") {
         git (
-            url: 'https://github.com/nginx/nginx.git',
+            url: "https://github.com/nginx/nginx.git",
             changelog: false,
             poll: false
         )
 
         latestNginxVersion = sortVersions(
             sh (
-                script: 'git tag --list',
+                script: "git tag --list",
                 returnStdout: true
-            ).tokenize('\n').collect{it - 'release-'}
+            ).tokenize("\n").collect{it - "release-"}
         )[-1]
     }
 
-    withCredentials([string(credentialsId: 'HASS-TOKEN', variable: 'token')]) {
+    withCredentials([string(credentialsId: "HASS-TOKEN", variable: "token")]) {
 
-        Map state = getHassEntityState('binary_sensor.updater', token)
-        if (state.state == 'on') {
+        Map state = getHassEntityState("binary_sensor.updater", token)
+        if (state.state == "on") {
             updateAvailable = true
             versions.HASS_VERSION = state.attributes.newest_version
         }
 
-        state = getHassEntityState('binary_sensor.certbot_updater', token)
-        if (state.state == 'on') {
+        state = getHassEntityState("binary_sensor.certbot_updater", token)
+        if (state.state == "on") {
             updateAvailable = true
             versions.CERTBOT_VERSION = state.attributes.newest_version
         }
 
-        state = getHassEntityState('sensor.docker_mosquitto', token)
-        if (state.attributes.image.split(':')[1] != latestMosquittoVersion) {
+        state = getHassEntityState("sensor.docker_mosquitto", token)
+        if (state.attributes.image.split(":")[1] != latestMosquittoVersion) {
             updateAvailable = true
             versions.MOSQUITTO_VERSION = latestMosquittoVersion
         }
 
-        state = getHassEntityState('sensor.docker_unifi', token)
-        if (state.attributes.image.split(':')[1] != latestUnifiVersion) {
+        state = getHassEntityState("sensor.docker_unifi", token)
+        if (state.attributes.image.split(":")[1] != latestUnifiVersion) {
             updateAvailable = true
             versions.UNIFI_VERSION = latestUnifiVersion
         }
 
-        state = getHassEntityState('sensor.docker_nginx', token)
-        if (state.attributes.image.split(':')[1].split('-')[0] != latestNginxVersion) {
+        state = getHassEntityState("sensor.docker_nginx", token)
+        if (state.attributes.image.split(":")[1].split("-")[0] != latestNginxVersion) {
             updateAvailable = true
             versions.NGINX_VERSION = latestUnifiVersion
         }
@@ -87,15 +87,15 @@ node ('built-in') {
 
     if (updateAvailable) {
         writeFile (
-            file: 'docker/.env',
-            text: versions.collect{"${it.key}=${it.value}"}.join('\n')
+            file: "docker/.env",
+            text: versions.collect{"${it.key}=${it.value}"}.join("\n")
         )
-        sh 'git config --global user.email jenkins@overlordserver.ddns.net'
-        sh 'git config --global user.name Jenkins'
-        sh 'git add docker/.env; git commit -m"Automated container version update"'
+        sh "git config --global user.email jenkins@overlordserver.ddns.net"
+        sh "git config --global user.name Jenkins"
+        sh "git add docker/.env; git commit -m"Automated container version update""
 
-        sshagent (credentials: ['github-ssh']) {
-            sh "git push ${scmVars.GIT_URL} ${scmVars.GIT_BRANCH - 'origin/'}"
+        sshagent (credentials: ["github-ssh"]) {
+            sh "git push ${scmVars.GIT_URL} ${scmVars.GIT_BRANCH - "origin/"}"
         }
     }
 
@@ -107,8 +107,8 @@ Map getHassEntityState(String entity, String token) {
         text: httpRequest (
             url: "http://192.168.1.86:8123/api/states/${entity}",
             customHeaders: [[
-                name: 'Authorization',
-                value: "Bearer ${token}",
+                name: "Authorization",
+                value: "Bearer " + token,
                 maskValue: true
             ]]
         ).content
@@ -118,8 +118,8 @@ Map getHassEntityState(String entity, String token) {
 @NonCPS
 Map loadEnvVars(String text) {
     Map vars = [:]
-    text.tokenize('\n').each {
-        List split = it.tokenize('=')
+    text.tokenize("\n").each {
+        List split = it.tokenize("=")
         vars[split[0]] = split[1]
     }
     return vars
