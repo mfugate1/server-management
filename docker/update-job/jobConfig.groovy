@@ -13,7 +13,7 @@ pipelineJob ('Update-Docker1-Versions') {
                     branch('main')
                 }
                 lightweight()
-                scriptPath('docker/Jenkinsfile')
+                scriptPath('docker/update-job/Jenkinsfile')
             }
         }
     }

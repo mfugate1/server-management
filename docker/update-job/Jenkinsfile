@@ -80,7 +80,7 @@ node ("built-in") {
         state = getHassEntityState("sensor.docker_nginx", token)
         if (state.attributes.image.split(":")[1].split("-")[0] != latestNginxVersion) {
             updateAvailable = true
-            versions.NGINX_VERSION = latestUnifiVersion
+            versions.NGINX_VERSION = latestNginxVersion
         }
 
     }
@@ -94,7 +94,7 @@ node ("built-in") {
         sh "git config --global user.name Jenkins"
         sh "git add docker/.env; git commit -m'Automated container version update'"
 
-        sshagent (credentials: ["github-ssh"]) {
+        sshagent(credentials: ["github-ssh"]) {
             sh "git push ${scmVars.GIT_URL} ${scmVars.GIT_BRANCH - "origin/"}"
         }
     }
