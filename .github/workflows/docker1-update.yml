@@ -19,7 +19,7 @@ jobs:
         with: 
           keyvault: overlord-vault
           secrets: >
-            JENKINS-DOCKER1-UPDATE-CONTAINER-VERSIONS-TOKEN
+            JENKINS-DOCKER1-UPDATE-CONTAINER-VERSIONS-TOKEN,
             OVERLORD-URL
       - run: >-
           curl ${{ steps.az.outputs.OVERLORD-URL }}/jenkins-webhook-truenas?token=${{ steps.az.outputs.JENKINS-DOCKER1-UPDATE-CONTAINER-VERSIONS-TOKEN }} 
