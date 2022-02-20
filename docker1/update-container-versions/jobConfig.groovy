@@ -12,7 +12,7 @@ pipelineJob ('Docker1-Update-Container-Versions') {
                 git {
                     remote {
                         github('mfugate1/server-management', 'ssh', 'github.com')
-                        credentials('jenkins-ssh')
+                        credentials(JENKINS_SSH_KEY)
                     }
                     extensions {
                         localBranch()

@@ -113,7 +113,7 @@ node ("built-in") {
         sh "git config --global user.name ${commitUser}"
         sh "git add ${envFile}; git commit -m'${commitMessage}'"
 
-        sshagent(credentials: ["github-ssh"]) {
+        sshagent(credentials: [JENKINS_SSH_KEY]) {
             sh "git push ${scmVars.GIT_URL} ${scmVars.GIT_BRANCH - "origin/"}"
         }
     }
