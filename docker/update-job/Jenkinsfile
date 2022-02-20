@@ -51,33 +51,36 @@ node ("built-in") {
         )[-1]
     }
 
-    withCredentials([string(credentialsId: "HASS-TOKEN", variable: "token")]) {
+    withCredentials([
+        string(credentialsId: "HASS-TOKEN", variable: "token"),
+        string(credentialsId: "DOCKER1-IP", variable: "docker1Ip")
+    ]) {
 
-        Map state = getHassEntityState("binary_sensor.updater", token)
+        Map state = getHassEntityState("binary_sensor.updater", docker1Ip, token)
         if (state.state == "on") {
             updateAvailable = true
             versions.HASS_VERSION = state.attributes.newest_version.trim()
         }
 
-        state = getHassEntityState("binary_sensor.certbot_updater", token)
+        state = getHassEntityState("binary_sensor.certbot_updater", docker1Ip, token)
         if (state.state == "on") {
             updateAvailable = true
             versions.CERTBOT_VERSION = state.attributes.newest_version.trim()
         }
 
-        state = getHassEntityState("sensor.docker_mosquitto", token)
+        state = getHassEntityState("sensor.docker_mosquitto", docker1Ip, token)
         if (state.attributes.image.split(":")[1] != latestMosquittoVersion) {
             updateAvailable = true
             versions.MOSQUITTO_VERSION = latestMosquittoVersion.trim()
         }
 
-        state = getHassEntityState("sensor.docker_unifi", token)
+        state = getHassEntityState("sensor.docker_unifi", docker1Ip, token)
         if (state.attributes.image.split(":")[1] != latestUnifiVersion) {
             updateAvailable = true
             versions.UNIFI_VERSION = latestUnifiVersion.trim()
         }
 
-        state = getHassEntityState("sensor.docker_nginx", token)
+        state = getHassEntityState("sensor.docker_nginx", docker1Ip, token)
         if (state.attributes.image.split(":")[1].split("-")[0] != latestNginxVersion) {
             updateAvailable = true
             versions.NGINX_VERSION = latestNginxVersion.trim()
@@ -97,15 +100,17 @@ node ("built-in") {
         sshagent(credentials: ["github-ssh"]) {
             sh "git push ${scmVars.GIT_URL} ${scmVars.GIT_BRANCH - "origin/"}"
         }
+
+
     }
 
     cleanWs()
 }
 
-Map getHassEntityState(String entity, String token) {
+Map getHassEntityState(String entity, String docker1Ip, String token) {
     return readJSON (
         text: httpRequest (
-            url: "http://192.168.1.86:8123/api/states/${entity}",
+            url: "http://${docker1Ip}:8123/api/states/${entity}",
             customHeaders: [[
                 name: "Authorization",
                 value: "Bearer " + token,
