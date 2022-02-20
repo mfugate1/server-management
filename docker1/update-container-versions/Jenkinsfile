@@ -85,7 +85,6 @@ node ("built-in") {
             updateAvailable = true
             versions.NGINX_VERSION = latestNginxVersion.trim()
         }
-
     }
 
     if (updateAvailable) {
@@ -100,8 +99,13 @@ node ("built-in") {
         sshagent(credentials: ["github-ssh"]) {
             sh "git push ${scmVars.GIT_URL} ${scmVars.GIT_BRANCH - "origin/"}"
         }
+    }
 
-
+    if (updateAvailable || params.forceUpdate) {
+        build (
+            job: "Docker1-Apply-Updates",
+            wait: false
+        )
     }
 
     cleanWs()
