@@ -1,4 +1,4 @@
-pipelineJob ('Update-Docker1-Versions') {
+pipelineJob ('Docker1-Update-Container-Versions') {
     definition {
         cpsScm {
             scm {
@@ -18,10 +18,26 @@ pipelineJob ('Update-Docker1-Versions') {
         }
     }
     properties {
+        parameters {
+            parameterDefinitions {
+                booleanParam {
+                    name('forceUpdate')
+                }
+            }
+        }
         pipelineTriggers {
             triggers {
                 cron {
                     spec('H 6 * * *')
+                }
+                GenericTrigger {
+                    genericVariables {
+                        genericVariable {
+                            expressionType: 'JSONPath',
+                            key: 'forceUpdate',
+                            value: '$.forceUpdate'
+                        }
+                    }
                 }
             }
         }
