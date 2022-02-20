@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - 'docker1/**'
+      - '.github/workflows/docker1-update.yml'
   workflow_dispatch:
 jobs:
   docker1-update:
@@ -23,4 +24,4 @@ jobs:
             OVERLORD-URL
       - run: >-
           curl ${{ steps.az.outputs.OVERLORD-URL }}/jenkins-webhook-truenas?token=${{ steps.az.outputs.JENKINS-DOCKER1-UPDATE-CONTAINER-VERSIONS-TOKEN }} 
-          -X POST -d '{"forceUpdate": true}'
+          -X POST -d '{"forceUpdate": "true"}'
