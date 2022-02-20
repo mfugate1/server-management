@@ -7,6 +7,11 @@ String docker1Ip = com.cloudbees.plugins.credentials.CredentialsProvider.lookupC
 
 job ("Docker1-Apply-Updates") {
     label("built-in")
+    properties {
+        disableConcurrentBuilds {
+            abortPrevious(false)
+        }
+    }
     steps {
         remoteShell("jenkins@${docker1Ip}:22") {
             command([

@@ -25,6 +25,9 @@ pipelineJob ('Docker1-Update-Container-Versions') {
         }
     }
     properties {
+        disableConcurrentBuilds {
+            abortPrevious(false)
+        }
         parameters {
             parameterDefinitions {
                 booleanParam {
