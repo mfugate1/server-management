@@ -1,14 +1,31 @@
+String envFile = "docker1/.env"
+
+String mosquittoGitRepo = "https://github.com/eclipse/mosquitto.git"
+String nginxGitRepo = "https://github.com/nginx/nginx.git"
+String unifiGitRepo = "https://github.com/jacobalberty/unifi-docker.git"
+
+String certbotUpdateSensor = "binary_sensor.certbot_updater"
+String hassUpdateSensor = "binary_sensor.updater"
+String mosquittoUpdateSensor = "sensor.docker_mosquitto"
+String nginxUpdateSensor = "sensor.docker_nginx"
+String unifiUpdateSensor = "sensor.docker_unifi"
+
+String commitUser = "Jenkins"
+String commitEmail = "jenkins@noreply.com"
+String commitMessage = "Automated container version update"
+
+
 node ("built-in") {
     Map scmVars = checkout scm
 
-    Map versions = loadEnvVars(readFile(file: "docker/.env"))
+    Map versions = loadEnvVars(readFile(file: envFile))
 
     boolean updateAvailable = false
 
     String latestMosquittoVersion
     dir ("mosquitto") {
         git (
-            url: "https://github.com/eclipse/mosquitto.git",
+            url: mosquittoGitRepo,
             changelog: false,
             poll: false
         )
@@ -22,7 +39,7 @@ node ("built-in") {
     String latestUnifiVersion
     dir ("unifi") {
         git (
-            url: "https://github.com/jacobalberty/unifi-docker.git",
+            url: unifiGitRepo,
             changelog: false,
             poll: false
         )
@@ -38,7 +55,7 @@ node ("built-in") {
     String latestNginxVersion
     dir ("nginx") {
         git (
-            url: "https://github.com/nginx/nginx.git",
+            url: nginxGitRepo,
             changelog: false,
             poll: false
         )
@@ -56,31 +73,31 @@ node ("built-in") {
         string(credentialsId: "DOCKER1-IP", variable: "docker1Ip")
     ]) {
 
-        Map state = getHassEntityState("binary_sensor.updater", docker1Ip, token)
+        Map state = getHassEntityState(hassUpdateSensor, docker1Ip, token)
         if (state.state == "on") {
             updateAvailable = true
             versions.HASS_VERSION = state.attributes.newest_version.trim()
         }
 
-        state = getHassEntityState("binary_sensor.certbot_updater", docker1Ip, token)
+        state = getHassEntityState(certbotUpdateSensor, docker1Ip, token)
         if (state.state == "on") {
             updateAvailable = true
             versions.CERTBOT_VERSION = state.attributes.newest_version.trim()
         }
 
-        state = getHassEntityState("sensor.docker_mosquitto", docker1Ip, token)
+        state = getHassEntityState(mosquittoUpdateSensor, docker1Ip, token)
         if (state.attributes.image.split(":")[1] != latestMosquittoVersion) {
             updateAvailable = true
             versions.MOSQUITTO_VERSION = latestMosquittoVersion.trim()
         }
 
-        state = getHassEntityState("sensor.docker_unifi", docker1Ip, token)
+        state = getHassEntityState(unifiUpdateSensor, docker1Ip, token)
         if (state.attributes.image.split(":")[1] != latestUnifiVersion) {
             updateAvailable = true
             versions.UNIFI_VERSION = latestUnifiVersion.trim()
         }
 
-        state = getHassEntityState("sensor.docker_nginx", docker1Ip, token)
+        state = getHassEntityState(nginxUpdateSensor, docker1Ip, token)
         if (state.attributes.image.split(":")[1].split("-")[0] != latestNginxVersion) {
             updateAvailable = true
             versions.NGINX_VERSION = latestNginxVersion.trim()
@@ -89,12 +106,12 @@ node ("built-in") {
 
     if (updateAvailable) {
         writeFile (
-            file: "docker/.env",
+            file: envFile,
             text: versions.collect{"${it.key}=${it.value}"}.join("\n")
         )
-        sh "git config --global user.email jenkins@overlordserver.ddns.net"
-        sh "git config --global user.name Jenkins"
-        sh "git add docker/.env; git commit -m'Automated container version update'"
+        sh "git config --global user.email ${commitEmail}"
+        sh "git config --global user.name ${commitUser}"
+        sh "git add ${envFile}; git commit -m'${commitMessage}'"
 
         sshagent(credentials: ["github-ssh"]) {
             sh "git push ${scmVars.GIT_URL} ${scmVars.GIT_BRANCH - "origin/"}"
