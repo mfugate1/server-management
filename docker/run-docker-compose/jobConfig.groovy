@@ -1,6 +1,6 @@
 String docker1Ip = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
     com.cloudbees.plugins.credentials.common.IdCredentials.class, 
-    Jenkins.instance, 
+    jenkins.model.Jenkins.instance, 
     null, 
     null
 ).find{it.id == "DOCKER1-IP"}.getSecret()
