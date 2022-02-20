@@ -33,7 +33,7 @@ node ("built-in") {
         latestMosquittoVersion = sh (
             script: "git describe --abbrev=0",
             returnStdout: true
-        ) - "v"
+        ).trim() - "v"
     }
 
     String latestUnifiVersion
@@ -49,7 +49,7 @@ node ("built-in") {
                 script: "git tag --list",
                 returnStdout: true
             ).tokenize("\n").findAll{it.startsWith("v") && !it.endsWith("-rc")}.collect{it - "v"}
-        )[-1]
+        )[-1].trim()
     }
 
     String latestNginxVersion
@@ -65,7 +65,7 @@ node ("built-in") {
                 script: "git tag --list",
                 returnStdout: true
             ).tokenize("\n").collect{it - "release-"}
-        )[-1]
+        )[-1].trim()
     }
 
     withCredentials([
@@ -75,32 +75,39 @@ node ("built-in") {
 
         Map state = getHassEntityState(hassUpdateSensor, docker1Ip, token)
         if (state.state == "on") {
+            String latestHassVersion = state.attributes.newest_version.trim()
+            echo "HASS Update Available: ${latestHassVersion}"
             updateAvailable = true
-            versions.HASS_VERSION = state.attributes.newest_version.trim()
+            versions.HASS_VERSION = latestHassVersion
         }
 
         state = getHassEntityState(certbotUpdateSensor, docker1Ip, token)
         if (state.state == "on") {
+            String latestCertbotVersion = state.attributes.newest_version.trim()
+            echo "Certbot Update Available: ${latestCertbotVersion}"
             updateAvailable = true
-            versions.CERTBOT_VERSION = state.attributes.newest_version.trim()
+            versions.CERTBOT_VERSION = latestCertbotVersion
         }
 
         state = getHassEntityState(mosquittoUpdateSensor, docker1Ip, token)
         if (state.attributes.image.split(":")[1] != latestMosquittoVersion) {
+            echo "Mosquitto Update Available: ${latestMosquittoVersion}"
             updateAvailable = true
-            versions.MOSQUITTO_VERSION = latestMosquittoVersion.trim()
+            versions.MOSQUITTO_VERSION = latestMosquittoVersion
         }
 
         state = getHassEntityState(unifiUpdateSensor, docker1Ip, token)
         if (state.attributes.image.split(":")[1] != latestUnifiVersion) {
+            echo "Unifi Update Available: ${latestUnifiVersion}"
             updateAvailable = true
-            versions.UNIFI_VERSION = latestUnifiVersion.trim()
+            versions.UNIFI_VERSION = latestUnifiVersion
         }
 
         state = getHassEntityState(nginxUpdateSensor, docker1Ip, token)
         if (state.attributes.image.split(":")[1].split("-")[0] != latestNginxVersion) {
+            echo "Nginx Update Available: ${latestNginxVersion}"
             updateAvailable = true
-            versions.NGINX_VERSION = latestNginxVersion.trim()
+            versions.NGINX_VERSION = latestNginxVersion
         }
     }
 
