@@ -12,7 +12,7 @@ String unifiUpdateSensor = "sensor.docker_unifi"
 
 String commitUser = "Jenkins"
 String commitEmail = "jenkins@noreply.com"
-String commitMessage = "Automated container version update"
+String commitMessage = "Automated container version update [skip ci]"
 
 
 node ("built-in") {
