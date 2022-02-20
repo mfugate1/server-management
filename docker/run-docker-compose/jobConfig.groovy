@@ -5,7 +5,7 @@ String docker1Ip = com.cloudbees.plugins.credentials.CredentialsProvider.lookupC
     null
 ).find{it.id == "DOCKER1-IP"}.getSecret()
 
-job ("Run-Docker-Compose") {
+job ("Docker1-Compose") {
     label("built-in")
     steps {
         remoteShell("jenkins@${docker1Ip}:22") {
