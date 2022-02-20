@@ -1,0 +1,26 @@
+name: Docker1 Update
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docker1/**'
+  workflow_dispatch:
+jobs:
+  docker1-update:
+    name: Docker1 Update
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - id: az
+        uses: Azure/get-keyvault-secrets@v1
+        with: 
+          keyvault: overlord-vault
+          secrets: >
+            JENKINS-DOCKER1-UPDATE-CONTAINER-VERSIONS-TOKEN
+            OVERLORD-URL
+      - run: >-
+          curl ${{ steps.az.outputs.OVERLORD-URL }}/jenkins-webhook-truenas?token=${{ steps.az.outputs.JENKINS-DOCKER1-UPDATE-CONTAINER-VERSIONS-TOKEN }} 
+          -X POST -d '{"forceUpdate": true}'
