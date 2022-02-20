@@ -56,31 +56,31 @@ node ("built-in") {
         Map state = getHassEntityState("binary_sensor.updater", token)
         if (state.state == "on") {
             updateAvailable = true
-            versions.HASS_VERSION = state.attributes.newest_version
+            versions.HASS_VERSION = state.attributes.newest_version.trim()
         }
 
         state = getHassEntityState("binary_sensor.certbot_updater", token)
         if (state.state == "on") {
             updateAvailable = true
-            versions.CERTBOT_VERSION = state.attributes.newest_version
+            versions.CERTBOT_VERSION = state.attributes.newest_version.trim()
         }
 
         state = getHassEntityState("sensor.docker_mosquitto", token)
         if (state.attributes.image.split(":")[1] != latestMosquittoVersion) {
             updateAvailable = true
-            versions.MOSQUITTO_VERSION = latestMosquittoVersion
+            versions.MOSQUITTO_VERSION = latestMosquittoVersion.trim()
         }
 
         state = getHassEntityState("sensor.docker_unifi", token)
         if (state.attributes.image.split(":")[1] != latestUnifiVersion) {
             updateAvailable = true
-            versions.UNIFI_VERSION = latestUnifiVersion
+            versions.UNIFI_VERSION = latestUnifiVersion.trim()
         }
 
         state = getHassEntityState("sensor.docker_nginx", token)
         if (state.attributes.image.split(":")[1].split("-")[0] != latestNginxVersion) {
             updateAvailable = true
-            versions.NGINX_VERSION = latestNginxVersion
+            versions.NGINX_VERSION = latestNginxVersion.trim()
         }
 
     }
