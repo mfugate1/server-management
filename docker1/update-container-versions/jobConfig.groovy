@@ -48,9 +48,9 @@ pipelineJob ('Docker1-Update-Container-Versions') {
                     regexpFilterExpression('')
                     genericVariables {
                         genericVariable {
-                            expressionType: 'JSONPath',
-                            key: 'forceUpdate',
-                            value: '$.forceUpdate'
+                            expressionType('JSONPath')
+                            key('forceUpdate')
+                            value('$.forceUpdate')
                         }
                     }
                 }
