@@ -1,5 +1,7 @@
+import org.jenkinsci.plugins.azurekeyvaultplugin.AzureKeyVaultGlobalConfiguration
+
 jenkins.model.GlobalConfiguration.all().get(
-    org.jenkinsci.plugins.azurekeyvaultplugin.AzureKeyVaultGlobalConfiguration.class
+    AzureKeyVaultGlobalConfiguration.class
 ).doReloadCache()
 
 String webhookToken = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
