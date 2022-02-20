@@ -10,7 +10,7 @@ job ("Docker1-Apply-Updates") {
     steps {
         remoteShell("jenkins@${docker1Ip}:22") {
             command([
-                "cd /docker/server-management/docker",
+                "cd /docker/server-management/docker1",
                 "git pull",
                 "docker-compose up -d"
             ])
