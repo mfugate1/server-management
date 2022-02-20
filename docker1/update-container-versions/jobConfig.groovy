@@ -1,4 +1,4 @@
-GlobalConfiguration.all().get(
+jenkins.model.GlobalConfiguration.all().get(
     org.jenkinsci.plugins.azurekeyvaultplugin.AzureKeyVaultGlobalConfiguration.class
 ).doReloadCache()
 
