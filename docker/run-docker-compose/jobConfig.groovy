@@ -1,8 +1,9 @@
-def docker1Ip = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
-    org.jenkinsci.plugins.azurekeyvaultplugin.credentials.string.AzureSecretStringCredentials.class, 
+String docker1Ip = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
+    com.cloudbees.plugins.credentials.common.IdCredentials.class, 
     Jenkins.instance, 
     null, 
-    null).find{it.id == "DOCKER1-IP"}.getSecret()
+    null
+).find{it.id == "DOCKER1-IP"}.getSecret()
 
 job ("Run-Docker-Compose") {
     label("built-in")
