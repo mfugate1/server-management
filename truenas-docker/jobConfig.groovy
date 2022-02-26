@@ -18,7 +18,7 @@ ssh -o StrictHostKeyChecking=no jenkins@${TRUENAS_DOCKER_IP} 'nohup ./update-jen
 '''
 
 job ('Truenas-Docker-Apply-Updates') {
-    label('docker')
+    label('built-in')
     scm {
         github('mfugate1/server-management', 'main', 'https')
     }
