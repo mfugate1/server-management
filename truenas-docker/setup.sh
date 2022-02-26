@@ -38,6 +38,7 @@ fi
 cd /home/jenkins
 
 SECRETS=jenkins-secrets.properties
+touch $SECRETS
 docker run -it --rm -e VAULT=overlord-vault -v $SECRETS:/secrets mcr.microsoft.com/azure-cli:latest bash -c 'az login; \
     echo AZ_VAULT_URL=$(az keyvault secret show --vault-name overlord-vault --name AZ-VAULT-URL | jq -r ".value") > /secrets; \
     echo AZURE_CLIENT_ID=$(az keyvault secret show --vault-name overlord-vault --name AZURE-CLIENT-ID | jq -r ".value") >> /secrets; \
