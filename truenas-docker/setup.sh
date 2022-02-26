@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+JENKINS_HOME=/home/jenkins
+SECRETS=$JENKINS_HOME/jenkins-secrets.properties
+
 if ! which docker &>/dev/null; then
     echo "Installing docker..."
     apt-get update
@@ -35,9 +38,6 @@ if ! id -u jenkins &>/dev/null; then
     echo
 fi
 
-cd /home/jenkins
-
-SECRETS=jenkins-secrets.properties
 touch $SECRETS
 docker run -it --rm -e VAULT=overlord-vault -v $SECRETS:/secrets mcr.microsoft.com/azure-cli:latest bash -c 'az login; \
     echo AZ_VAULT_URL=$(az keyvault secret show --vault-name overlord-vault --name AZ-VAULT-URL | jq -r ".value") > /secrets; \
@@ -47,7 +47,8 @@ docker run -it --rm -e VAULT=overlord-vault -v $SECRETS:/secrets mcr.microsoft.c
     echo AZURE_TENANT=$(az keyvault secret show --vault-name overlord-vault --name AZURE-TENANT | jq -r ".value") >> /secrets; \
     echo JENKINS_SSH_KEY=$(az keyvault secret show --vault-name overlord-vault --name JENKINS-SSH-KEY | jq -r ".value") >> /secrets'
 
-wget https://raw.githubusercontent.com/mfugate1/server-management/main/truenas-docker/docker-compose.yaml
-chown jenkins:jenkins $SECRETS docker-compose.yaml
+wget https://raw.githubusercontent.com/mfugate1/server-management/main/truenas-docker/docker-compose.yaml -O $JENKINS_HOME/docker-compose.yaml
+chown jenkins:jenkins $SECRETS $JENKINS_HOME/docker-compose.yaml
 
+cd $JENKINS_HOME
 sudo -u jenkins docker-compose up -d
