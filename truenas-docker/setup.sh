@@ -35,12 +35,18 @@ if ! id -u jenkins &>/dev/null; then
     echo
 fi
 
-if [ ! -d /docker/server-management ]; then
-    echo "Retrieving server-management git repository..."
-    mkdir -p /docker/server-management
-    git clone https://github.com/mfugate1/server-management.git /docker/server-management
-    echo
-fi
+cd /home/jenkins
 
-mkdir -p /docker/jenkins
-chown -R jenkins:jenkins /docker
+SECRETS=jenkins-secrets.properties
+docker run -it --rm -e VAULT=overlord-vault -v $SECRETS:/secrets mcr.microsoft.com/azure-cli:latest bash -c 'az login; \
+    echo AZ_VAULT_URL=$(az keyvault secret show --vault-name overlord-vault --name AZ-VAULT-URL | jq -r ".value") > /secrets; \
+    echo AZURE_CLIENT_ID=$(az keyvault secret show --vault-name overlord-vault --name AZURE-CLIENT-ID | jq -r ".value") >> /secrets; \
+    echo AZURE_CLIENT_SECRET=$(az keyvault secret show --vault-name overlord-vault --name AZURE-CLIENT-SECRET | jq -r ".value") >> /secrets; \
+    echo AZURE_SUBSCRIPTION_ID=$(az keyvault secret show --vault-name overlord-vault --name AZURE-SUBSCRIPTION-ID | jq -r ".value") >> /secrets; \
+    echo AZURE_TENANT=$(az keyvault secret show --vault-name overlord-vault --name AZURE-TENANT | jq -r ".value") >> /secrets; \
+    echo JENKINS_SSH_KEY=$(az keyvault secret show --vault-name overlord-vault --name JENKINS-SSH-KEY | jq -r ".value") >> /secrets'
+
+wget https://raw.githubusercontent.com/mfugate1/server-management/main/truenas-docker/docker-compose.yaml
+chown jenkins:jenkins $SECRETS docker-compose.yaml
+
+sudo -u jenkins docker-compose up -d

@@ -8,7 +8,7 @@ services:
     image: mfugate/jenkins:latest
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /docker/jenkins/jenkins-secrets.properties:/run/secrets/secrets.properties
+      - /home/jenkins/jenkins-secrets.properties:/run/secrets/secrets.properties
       - jenkins_home:/var/jenkins_home
     ports:
       - "8080:8080"

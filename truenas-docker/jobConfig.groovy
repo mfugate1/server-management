@@ -13,8 +13,7 @@ AZURE_TENANT=$AZURE_TENANT
 JENKINS_SSH_KEY=$JENKINS_SSH_KEY
 EOF
 chmod +x update-jenkins.sh
-scp -o StrictHostKeyChecking=no update-jenkins.sh truenas-docker/docker-compose.yaml jenkins@${TRUENAS_DOCKER_IP}:~/
-scp -o StrictHostKeyChecking=no jenkins-secrets.properties jenkins@${TRUENAS_DOCKER_IP}:/docker/jenkins/
+scp -o StrictHostKeyChecking=no update-jenkins.sh truenas-docker/docker-compose.yaml jenkins-secrets.properties jenkins@${TRUENAS_DOCKER_IP}:~/
 ssh -o StrictHostKeyChecking=no jenkins@${TRUENAS_DOCKER_IP} 'nohup ./update-jenkins.sh > /dev/null 2>&1 &'
 '''
 
