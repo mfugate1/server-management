@@ -27,4 +27,9 @@ job ("Docker1-Apply-Updates") {
             retryLimit(5)
         }
     }
+    configure { project ->
+        def retryNode = project / "publishers" / "com.chikli.hudson.plugin.naginator.NaginatorPublisher"
+        (retryNode / "regexpForRerun").setValue("An HTTP request took too long to complete")
+        (retryNode / "checkRegexp").setValue("true")
+    }
 }
