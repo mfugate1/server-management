@@ -21,4 +21,10 @@ job ("Docker1-Apply-Updates") {
             ])
         }
     }
+    publishers {
+        retryBuild {
+            fixedDelay(5)
+            retryLimit(5)
+        }
+    }
 }
