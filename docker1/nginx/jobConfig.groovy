@@ -1,8 +1,6 @@
-String nginxDir = __FILE__ - "${SEED_JOB.getWorkspace()}/"
-
 String script = """\
 echo "docker1 ansible_host=\${DOCKER1_IP} ansible_user=jenkins" > hosts
-ansible-playbook -i hosts ${nginxDir}/playbook.yml
+ansible-playbook -i hosts docker1/nginx/playbook.yml
 """
 
 job ("Docker1-Nginx-Playbook") {
