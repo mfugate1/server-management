@@ -1,4 +1,4 @@
-String nginxDir = __FILE__ - "${hudson.model.Executor.currentExecutor().getRemote()}/"
+String nginxDir = __FILE__ - "${WORKSPACE}/"
 
 String script = """\
 echo "docker1 ansible_host=\${DOCKER1_IP} ansible_user=jenkins" > hosts
@@ -11,6 +11,9 @@ job ("Docker1-Nginx-Playbook") {
         disableConcurrentBuilds {
             abortPrevious(false)
         }
+    }
+    scm {
+        github('mfugate1/server-management', 'main', 'https')
     }
     steps {
         shell(script)
