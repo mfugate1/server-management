@@ -1,4 +1,4 @@
-String nginxDir = __FILE__ - "${WORKSPACE}/"
+String nginxDir = __FILE__ - "${SEED_JOB.getWorkspace()}/"
 
 String script = """\
 echo "docker1 ansible_host=\${DOCKER1_IP} ansible_user=jenkins" > hosts
