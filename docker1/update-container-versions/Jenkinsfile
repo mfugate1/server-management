@@ -12,7 +12,7 @@ String unifiUpdateSensor = "sensor.docker_unifi"
 
 String commitUser = "Jenkins"
 String commitEmail = "jenkins@noreply.com"
-String commitMessage = "Automated container version update [skip ci]"
+String commitMessage = "Automated container version update [skip ci]\n\n"
 
 
 node ("built-in") {
@@ -76,7 +76,7 @@ node ("built-in") {
         Map state = getHassEntityState(hassUpdateSensor, docker1Ip, token)
         if (state.state == "on") {
             String latestHassVersion = state.attributes.newest_version.trim()
-            echo "HASS Update Available: ${latestHassVersion}"
+            commitMessage += "HASS Update: ${latestHassVersion}\n"
             updateCount++
             versions.HASS_VERSION = latestHassVersion
         }
@@ -84,34 +84,36 @@ node ("built-in") {
         state = getHassEntityState(certbotUpdateSensor, docker1Ip, token)
         if (state.state == "on") {
             String latestCertbotVersion = state.attributes.newest_version.trim()
-            echo "Certbot Update Available: ${latestCertbotVersion}"
+            commitMessage += "Certbot Update: ${latestCertbotVersion}\n"
             updateCount++
             versions.CERTBOT_VERSION = latestCertbotVersion
         }
 
         state = getHassEntityState(mosquittoUpdateSensor, docker1Ip, token)
         if (state.attributes.image.split(":")[1] != latestMosquittoVersion) {
-            echo "Mosquitto Update Available: ${latestMosquittoVersion}"
+            commitMessage += "Mosquitto Update: ${latestMosquittoVersion}\n"
             updateCount++
             versions.MOSQUITTO_VERSION = latestMosquittoVersion
         }
 
         state = getHassEntityState(unifiUpdateSensor, docker1Ip, token)
         if (state.attributes.image.split(":")[1] != latestUnifiVersion) {
-            echo "Unifi Update Available: ${latestUnifiVersion}"
+            commitMessage += "Unifi Update: ${latestUnifiVersion}\n"
             updateCount++
             versions.UNIFI_VERSION = latestUnifiVersion
         }
 
         state = getHassEntityState(nginxUpdateSensor, docker1Ip, token)
         if (state.attributes.image.split(":")[1].split("-")[0] != latestNginxVersion) {
-            echo "Nginx Update Available: ${latestNginxVersion}"
+            commitMessage += "Nginx Update: ${latestNginxVersion}\n"
             updateCount++
             versions.NGINX_VERSION = latestNginxVersion
         }
     }
 
     if (updateCount > 0) {
+        echo commitMessage
+
         writeFile (
             file: envFile,
             text: versions.collect{"${it.key}=${it.value}"}.join("\n")
