@@ -20,7 +20,7 @@ node ("built-in") {
 
     Map versions = loadEnvVars(readFile(file: envFile))
 
-    boolean updateAvailable = false
+    int updateCount = 0
 
     String latestMosquittoVersion
     dir ("mosquitto") {
@@ -77,7 +77,7 @@ node ("built-in") {
         if (state.state == "on") {
             String latestHassVersion = state.attributes.newest_version.trim()
             echo "HASS Update Available: ${latestHassVersion}"
-            updateAvailable = true
+            updateCount++
             versions.HASS_VERSION = latestHassVersion
         }
 
@@ -85,33 +85,33 @@ node ("built-in") {
         if (state.state == "on") {
             String latestCertbotVersion = state.attributes.newest_version.trim()
             echo "Certbot Update Available: ${latestCertbotVersion}"
-            updateAvailable = true
+            updateCount++
             versions.CERTBOT_VERSION = latestCertbotVersion
         }
 
         state = getHassEntityState(mosquittoUpdateSensor, docker1Ip, token)
         if (state.attributes.image.split(":")[1] != latestMosquittoVersion) {
             echo "Mosquitto Update Available: ${latestMosquittoVersion}"
-            updateAvailable = true
+            updateCount++
             versions.MOSQUITTO_VERSION = latestMosquittoVersion
         }
 
         state = getHassEntityState(unifiUpdateSensor, docker1Ip, token)
         if (state.attributes.image.split(":")[1] != latestUnifiVersion) {
             echo "Unifi Update Available: ${latestUnifiVersion}"
-            updateAvailable = true
+            updateCount++
             versions.UNIFI_VERSION = latestUnifiVersion
         }
 
         state = getHassEntityState(nginxUpdateSensor, docker1Ip, token)
         if (state.attributes.image.split(":")[1].split("-")[0] != latestNginxVersion) {
             echo "Nginx Update Available: ${latestNginxVersion}"
-            updateAvailable = true
+            updateCount++
             versions.NGINX_VERSION = latestNginxVersion
         }
     }
 
-    if (updateAvailable) {
+    if (updateCount > 0) {
         writeFile (
             file: envFile,
             text: versions.collect{"${it.key}=${it.value}"}.join("\n")
@@ -125,12 +125,14 @@ node ("built-in") {
         }
     }
 
-    if (updateAvailable || params.forceUpdate) {
+    if (updateCount > 0 || params.forceUpdate) {
         build (
             job: "Docker1-Apply-Updates",
             wait: false
         )
     }
+
+    currentBuild.displayName = "${updateCount} updates"
 
     cleanWs()
 }
