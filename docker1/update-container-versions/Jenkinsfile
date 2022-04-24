@@ -5,7 +5,6 @@ String nginxGitRepo = "https://github.com/nginx/nginx.git"
 String unifiGitRepo = "https://github.com/jacobalberty/unifi-docker.git"
 
 String certbotUpdateSensor = "binary_sensor.certbot_updater"
-String hassUpdateSensor = "binary_sensor.updater"
 String mosquittoUpdateSensor = "sensor.docker_mosquitto"
 String nginxUpdateSensor = "sensor.docker_nginx"
 String unifiUpdateSensor = "sensor.docker_unifi"
@@ -73,9 +72,10 @@ node ("built-in") {
         string(credentialsId: "DOCKER1-IP", variable: "docker1Ip")
     ]) {
 
-        Map state = getHassEntityState(hassUpdateSensor, docker1Ip, token)
+        Map state = getHassEntityState("binary_sensor.docker_hub_update_available", docker1Ip, token)
         if (state.state == "on") {
-            String latestHassVersion = state.attributes.newest_version.trim()
+            state = getHassEntityState("sensor.docker_hub", docker1Ip, token)
+            String latestHassVersion = state.state.trim()
             commitMessage += "HASS Update: ${latestHassVersion}\n"
             updateCount++
             versions.HASS_VERSION = latestHassVersion
