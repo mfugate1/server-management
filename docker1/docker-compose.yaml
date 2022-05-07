@@ -32,18 +32,17 @@ services:
     ports:
       - "1883:1883"
       - "9001:9001"
-  nginx:
-    container_name: nginx
+  nginx-proxy-manager:
+    container_name: nginx-proxy-manager
     restart: unless-stopped
-    image: nginx:${NGINX_VERSION}-alpine
+    image: jc21/nginx-proxy-manager:latest
     ports:
       - "80:80"
+      - "81:81"
       - "443:443"
     volumes:
-      - /docker/nginx:/etc/nginx/conf.d
-      - /docker/certbot/conf:/etc/letsencrypt
-      - /docker/certbot/www:/var/www/certbot
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+      - nginx-data:/data
+      - letsencrypt:/etc/letsencrypt
   unifi:
     container_name: unifi
     restart: unless-stopped
@@ -67,3 +66,5 @@ services:
 volumes:
   mosquitto_data:
   mosquitto_log:
+  letsencrypt:
+  nginx-data:
