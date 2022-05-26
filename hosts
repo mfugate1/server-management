@@ -1,8 +1,8 @@
-basement-squeezebox.local ansible_host=192.168.1.91 ansible_user=jenkins CLIENTMAC=22:33:44:55:66:77 DTOVERLAY=hifiberry-dac
-livingroom-rtl433.local ansible_host=192.168.1.77 ansible_user=jenkins
-livingroom-squeezebox.local ansible_host=192.168.1.130 ansible_user=jenkins CLIENTMAC=11:22:33:44:55:66 DTOVERLAY=hifiberry-dac
-patio-squeezebox.local ansible_host=192.168.1.90 ansible_user=jenkins CLIENTMAC=00:11:22:33:44:55 DTOVERLAY=hifiberry-dacplus
-docker1 ansible_host=192.168.1.86 ansible_user=jenkins
+basement-squeezebox.local ansible_host=192.168.1.91 CLIENTMAC=22:33:44:55:66:77 DTOVERLAY=hifiberry-dac
+livingroom-rtl433.local ansible_host=192.168.1.77
+livingroom-squeezebox.local ansible_host=192.168.1.130 CLIENTMAC=11:22:33:44:55:66 DTOVERLAY=hifiberry-dac
+patio-squeezebox.local ansible_host=192.168.1.90 CLIENTMAC=00:11:22:33:44:55 DTOVERLAY=hifiberry-dacplus
+docker1 ansible_host=192.168.1.86
 
 [raspi]
 basement-squeezebox.local
