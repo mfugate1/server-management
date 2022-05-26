@@ -4,7 +4,7 @@ freeStyleJob("Playbook--Apt-Update") {
     }
     triggers {
         cron {
-            spec("H 1 * * *")
+            spec("H 6 * * *")
         }
     }
     steps {
