@@ -1,0 +1,38 @@
+- name: Raspberry Pi Squeezelite
+  hosts: "{{ host | default('raspi_squeezelite') }}"
+  tasks:
+    - name: Remove dtparam=audio=on from /boot/config.txt
+      become: true
+      register: dtparam
+      ansible.builtin.replace:
+        path: /boot/config.txt
+        regexp: "^dtparam=audio=on$"
+        replace: "#dtparam=audio=on"
+    - name: Disable vc4-kms-v3d audio
+      become: true
+      register: vc4
+      ansible.builtin.replace:
+        path: /boot/config.txt
+        regexp: "^dtoverlay=vc4-kms-v3d$"
+        replace: "dtoverlay=vc4-kms-v3d,audio=off"
+    - name: Add dtoverlay to /boot/config.txt
+      become: true
+      register: dtoverlay
+      ansible.builtin.lineinfile:
+        dest: /boot/config.txt
+        line: dtoverlay={{ DTOVERLAY }}
+    - name: Reboot
+      when: dtparam.changed or vc4.changed or dtoverlay.changed
+      become: true
+      reboot:
+    - name: Start Squeezelite Docker Container
+      community.docker.docker_container:
+        name: squeezelite
+        image: jakobengdahl/rpi-squeezelite:latest
+        restart_policy: unless-stopped
+        privileged: true
+        env:
+          SERVER: 192.168.1.32
+          CLIENTNAME: "{{ inventory_hostname | split('-') | first }}"
+          SOUNDDEVICE: default:CARD=sndrpihifiberry
+          CLIENTMAC: "{{ CLIENTMAC }}"

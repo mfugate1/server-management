@@ -1,0 +1,62 @@
+- name: Install Docker on Raspberry Pi with Glances monitoring
+  hosts: "{{ host | default('raspi') }}"
+  roles:
+    - role: jenkins-ssh
+    - role: jenkins-passwordless-sudo
+  tasks:
+    - name: Update and upgrade packages
+      become: true
+      ansible.builtin.apt:
+        autoremove: true
+        update_cache: true
+        upgrade: true
+    - name: Install python3-docker
+      become: true
+      ansible.builtin.apt:
+        name: python3-docker
+    - name: Install docker
+      ansible.builtin.shell: curl -fsSL https://get.docker.com | sudo sh
+      args:
+        creates: /usr/bin/docker
+    - name: Add jenkins user to docker group
+      become: true
+      ansible.builtin.user:
+        name: jenkins
+        groups: docker
+        append: true
+    - name: Check whether /boot/cmdline.txt has cpu/memory enabled
+      ansible.builtin.lineinfile:
+        path: /boot/cmdline.txt
+        regexp: '.*cgroup_enable=cpuset.*'
+        state: absent
+      register: checkcmdline
+      check_mode: true
+      changed_when: false
+    - name: Enable CPU and memory stats
+      become: true
+      when: not checkcmdline.found
+      ansible.builtin.shell: 
+        cmd: echo " cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory" >> /boot/cmdline.txt
+    - name: Deny veth interfaces in dhcpcd.conf
+      become: true
+      register: dhcpcd
+      ansible.builtin.lineinfile:
+        dest: /etc/dhcpcd.conf
+        line: denyinterfaces veth*,docker*
+    - name: Reboot
+      when: not checkcmdline.found or dhcpcd.changed
+      become: true
+      reboot:
+    - name: Glances Container
+      community.docker.docker_container:
+        name: glances
+        image: nicolargo/glances:latest-full
+        pull: true
+        restart_policy: unless-stopped
+        pid_mode: host
+        env:
+          GLANCES_OPT: "-w"
+        published_ports:
+          - 61208-61209:61208-61209
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock:ro

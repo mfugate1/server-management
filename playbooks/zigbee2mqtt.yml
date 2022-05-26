@@ -1,0 +1,27 @@
+- name: Install Zigbee2MQTT Docker container
+  hosts: zigbee2mqtt
+  tasks:
+    - name: Create Zigbee2MQTT config directory
+      become: true
+      ansible.builtin.file:
+        path: /docker/zigbee2mqtt
+        state: directory
+        owner: jenkins
+    - name: Create Zigbee2MQTT config file
+      ansible.builtin.copy:
+        src: files/zigbee2mqtt/configuration.yaml
+        dest: /docker/zigbee2mqtt/configuration.yaml
+    - name: Zigbee2MQTT Container
+      community.docker.docker_container:
+        name: zigbee2mqtt
+        image: koenkk/zigbee2mqtt:latest
+        restart_policy: unless-stopped
+        devices:
+          - /dev/ttyUSB0:/dev/ttyUSB0
+        env:
+          TZ: America/New_York
+        published_ports:
+          - 8080:8080
+        volumes:
+          - /docker/zigbee2mqtt:/app/data
+          - /run/udev:/run/udev:ro

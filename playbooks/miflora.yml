@@ -1,0 +1,44 @@
+- name: Install Miflora MQTT daemon
+  hosts: miflora
+  tasks:
+    - name: Install Git
+      become: true
+      ansible.builtin.apt:
+        update_cache: true
+        name: git
+    - name: Checkout Miflora MQTT repository
+      ansible.builtin.git:
+        repo: https://github.com/ThomDietrich/miflora-mqtt-daemon.git
+        dest: /home/jenkins/miflora-mqtt-daemon
+        single_branch: true
+        depth: 1
+    - name: Build Miflora MQTT docker image
+      community.docker.docker_image:
+        name: miflora-mqtt-daemon
+        tag: latest
+        source: build
+        build:
+          path: /home/jenkins/miflora-mqtt-daemon
+    - name: Remove repository
+      ansible.builtin.file:
+        path: /home/jenkins/miflora-mqtt-daemon
+        state: absent
+    - name: Create Miflora config directory
+      become: true
+      ansible.builtin.file:
+        path: /docker/miflora
+        state: directory
+        owner: jenkins
+        group: jenkins
+    - name: Create Miflora config file
+      ansible.builtin.copy:
+        src: files/miflora/config.ini
+        dest: /docker/miflora/config.ini
+    - name: Miflora Container
+      community.docker.docker_container:
+        name: miflora-mqtt
+        image: miflora-mqtt-daemon:latest
+        restart_policy: unless-stopped
+        network_mode: host
+        volumes:
+          - /docker/miflora:/config

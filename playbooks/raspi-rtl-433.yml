@@ -1,0 +1,28 @@
+- name: Create RTL-433 Container
+  hosts: rtl433
+  tasks:
+    - name: Create RTL-433 config directory
+      become: true
+      ansible.builtin.file:
+        path: /docker/rtl_433
+        state: directory
+        owner: jenkins
+        group: jenkins
+    - name: Create RTL-433 config file
+      ansible.builtin.copy:
+        src: files/rtl_433/rtl_433.conf
+        dest: /docker/rtl_433/rtl_433.conf
+    - name: Get RTL-433 bus and device
+      ansible.builtin.shell: "lsusb | grep RTL2838 | cut -d: -f1 | cut -d' ' -f2,4 | tr ' ' '/'"
+      register: rtl433device
+    - name: RTL-433 Container
+      community.docker.docker_container:
+        name: rtl433
+        image: hertzg/rtl_433:alpine-3.12-master
+        pull: true
+        restart_policy: unless-stopped
+        command: "-Fmqtt://docker1.overlord.net:1883"
+        devices:
+          - /dev/bus/usb/{{ rtl433device.stdout | trim }}:/dev/bus/usb/{{ rtl433device.stdout | trim }}
+        volumes:
+          - /docker/rtl_433/rtl_433.conf:/etc/rtl_433/rtl_433.conf
