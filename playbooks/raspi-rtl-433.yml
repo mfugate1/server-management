@@ -21,7 +21,7 @@
         image: hertzg/rtl_433:alpine-3.12-master
         pull: true
         restart_policy: unless-stopped
-        command: "-Fmqtt://docker1.overlord.net:1883"
+        command: "-Fmqtt://192.168.1.86:1883"
         devices:
           - /dev/bus/usb/{{ rtl433device.stdout | trim }}:/dev/bus/usb/{{ rtl433device.stdout | trim }}
         volumes:
