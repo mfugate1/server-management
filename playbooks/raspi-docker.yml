@@ -1,8 +1,5 @@
 - name: Install Docker on Raspberry Pi with Glances monitoring
   hosts: "{{ host | default('raspi') }}"
-  roles:
-    - role: jenkins-ssh
-    - role: jenkins-passwordless-sudo
   tasks:
     - name: Update and upgrade packages
       become: true
