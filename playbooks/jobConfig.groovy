@@ -25,6 +25,8 @@ String playbookScript = '''\
     ansiblePlaybook credentialsId: 'jenkins-ssh', disableHostKeyChecking: true, inventory: 'hosts', playbook: playbook
 '''.stripIndent()
 
+println binding.variables
+
 File workspace = new File("${PWD}/server-management/playbooks")
 
 pipelineJob("Run-Ansible-Playbook") {
