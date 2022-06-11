@@ -22,8 +22,11 @@ freeStyleJob("Playbook--Apt-Update") {
 }
 
 String playbookScript = '''\
-    ansiblePlaybook credentialsId: 'jenkins-ssh', disableHostKeyChecking: true, inventory: 'hosts', playbook: playbook
-'''.stripIndent()
+node ('built-in') {
+    git branch: 'main', url: 'https://github.com/mfugate1/server-management'
+    ansiblePlaybook credentialsId: 'jenkins-ssh', disableHostKeyChecking: true, inventory: 'hosts', playbook: "playbooks/${params.playbook}"
+}
+'''
 
 File workspace = new File(__FILE__ - "/jobConfig.groovy")
 
