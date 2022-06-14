@@ -39,6 +39,7 @@
         name: miflora-mqtt
         image: miflora-mqtt-daemon:latest
         restart_policy: unless-stopped
+        restart: true
         network_mode: host
         volumes:
           - /docker/miflora:/config
