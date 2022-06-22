@@ -11,6 +11,7 @@
       ansible.builtin.copy:
         src: files/zigbee2mqtt/configuration.yaml
         dest: /docker/zigbee2mqtt/configuration.yaml
+        force: false # Zigbee2MQTT will modify this file, so we only want to copy it if it doesn't already exist
     - name: Zigbee2MQTT Container
       community.docker.docker_container:
         name: zigbee2mqtt

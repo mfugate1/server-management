@@ -41,3 +41,6 @@ office-zigbee.local
 
 [miflora]
 livingroom-rtl433.local
+
+[homeassistant]
+docker1

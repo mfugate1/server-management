@@ -1,0 +1,74 @@
+- name: Home Assistant
+  hosts: homeassistant
+  vars:
+    secrets_list:
+      - FITNESS_DB_PASSWORD
+      - HASS_ALEXA_CLIENT_ID
+      - HASS_ALEXA_CLIENT_SECRET
+      - HASS_DB_PASSWORD
+      - LIVINGROOM_TABLET_FULLY_KIOSK_PASSWORD
+      - SLEEPIQ_USERNAME
+      - SLEEPIQ_PASSWORD
+      - XIAOMI_VACUUM_TOKEN
+      - XIAOMI_VACUUM_USERNAME
+      - XIAOMI_VACUUM_PASSWORD
+  tasks:
+    - name: Install git and docker-py
+      become: true
+      ansible.builtin.apt:
+        update_cache: true
+        name: 
+          - git
+          - python3-docker
+    - name: Checkout Home Assistant config repository
+      ansible.builtin.git:
+        repo: https://github.com/mfugate1/home-assistant-config.git
+        dest: /docker/home-assistant
+        force: true
+    - name: Get Key Vault
+      azure.azcollection.azure_rm_keyvault_info:
+        name: overlord-vault
+        resource_group: Overlord
+      register: keyvault
+      delegate_to: 127.0.0.1
+    - name: Get secrets
+      azure.azcollection.azure_rm_keyvaultsecret_info:
+        vault_uri: "{{ keyvault['keyvaults'][0]['vault_uri'] }}"
+        name: "{{ item | replace('_', '-') }}"
+      register: vaultSecrets
+      loop: "{{ secrets_list }}"
+      delegate_to: 127.0.0.1
+    - name: Set secrets
+      ansible.builtin.set_fact:
+        "{{ item.item | replace('-', '_') }}": "{{ item.secrets[0].secret }}"
+      loop: "{{ vaultSecrets.results }}"
+    - name: Create secrets file
+      ansible.builtin.template:
+        src: files/homeassistant/secrets.yaml
+        dest: /docker/home-assistant/secrets.yaml
+        owner: jenkins
+        mode: '0600'
+    - name: Home Assistant Container
+      community.docker.docker_container:
+        name: home-assistant
+        image: homeassistant/home-assistant:latest
+        restart_policy: unless-stopped
+        network_mode: host
+        privileged: true
+        pull: true
+        volumes:
+          - /docker/home-assistant:/config
+          - /var/run/docker.sock:/var/run/docker.sock
+          - /etc/localtime:/etc/localtime:ro
+    - name: Test Home Assistant configuration
+      community.docker.docker_container_exec:
+        container: home-assistant
+        argv:
+          - hass
+          - --script
+          - check_config
+          - -c
+          - /config
+          - -f
+      register: test_result
+      failed_when: "'ERROR' in test_result.stdout"
