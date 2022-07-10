@@ -6,6 +6,15 @@ office-zigbee.local ansible_host=192.168.1.68
 patio-squeezebox.local ansible_host=192.168.1.90 CLIENTMAC=00:11:22:33:44:55 DTOVERLAY=hifiberry-dacplus
 docker1 ansible_host=192.168.1.86
 
+[docker]
+basement-squeezebox.local
+docker1
+livingroom-rtl433.local
+livingroom-squeezebox.local
+office-rtl433.local
+office-zigbee.local
+patio-squeezebox.local
+
 [raspi]
 basement-squeezebox.local
 livingroom-rtl433.local

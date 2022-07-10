@@ -1,0 +1,10 @@
+- name: Docker Prune
+  hosts: docker
+  tasks:
+    - name: Docker Prune
+      community.docker.docker_prune:
+        builder_cache: true
+        containers: true
+        images: true
+        networks: true
+        volumes: true
