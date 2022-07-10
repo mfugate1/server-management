@@ -25,23 +25,6 @@
         repo: https://github.com/mfugate1/home-assistant-config.git
         dest: /docker/home-assistant
         force: true
-    - name: Get Key Vault
-      azure.azcollection.azure_rm_keyvault_info:
-        name: overlord-vault
-        resource_group: Overlord
-      register: keyvault
-      delegate_to: 127.0.0.1
-    - name: Get secrets
-      azure.azcollection.azure_rm_keyvaultsecret_info:
-        vault_uri: "{{ keyvault['keyvaults'][0]['vault_uri'] }}"
-        name: "{{ item | replace('_', '-') }}"
-      register: vaultSecrets
-      loop: "{{ secrets_list }}"
-      delegate_to: 127.0.0.1
-    - name: Set secrets
-      ansible.builtin.set_fact:
-        "{{ item.item | replace('-', '_') }}": "{{ item.secrets[0].secret }}"
-      loop: "{{ vaultSecrets.results }}"
     - name: Create secrets file
       ansible.builtin.template:
         src: files/homeassistant/secrets.yaml

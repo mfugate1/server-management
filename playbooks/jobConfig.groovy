@@ -23,8 +23,23 @@ freeStyleJob("Playbook--Apt-Update") {
 
 String playbookScript = '''\
 node ('built-in') {
+    List credentialsToLoad = [
+        'FITNESS-DB-PASSWORD',
+        'HASS-ALEXA-CLIENT-ID',
+        'HASS-ALEXA-CLIENT-SECRET',
+        'HASS-DB-PASSWORD',
+        'LIVINGROOM-TABLET-FULLY-KIOSK-PASSWORD',
+        'SLEEPIQ-USERNAME',
+        'SLEEPIQ-PASSWORD',
+        'XIAOMI-VACUUM-TOKEN',
+        'XIAOMI-VACUUM-USERNAME',
+        'XIAOMI-VACUUM-PASSWORD'
+    ]
+
+    credentialsToLoad = credentialsToLoad.collect{string(credentialsId: it, variable: it)}
+
     git branch: 'main', url: 'https://github.com/mfugate1/server-management'
-    withCredentials([azureServicePrincipal(credentialsId: 'az-vault', clientSecretVariable: 'AZURE_SECRET')]) {
+    withCredentials(credentialsToLoad) {
         ansiblePlaybook credentialsId: 'jenkins-ssh', disableHostKeyChecking: true, inventory: 'hosts', playbook: "playbooks/${params.playbook}"
     }
 }
