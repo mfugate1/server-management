@@ -39,6 +39,7 @@
         network_mode: host
         privileged: true
         pull: true
+        timeout: 300
         volumes:
           - /docker/home-assistant:/config
           - /var/run/docker.sock:/var/run/docker.sock
