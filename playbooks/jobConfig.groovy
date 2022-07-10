@@ -24,7 +24,9 @@ freeStyleJob("Playbook--Apt-Update") {
 String playbookScript = '''\
 node ('built-in') {
     git branch: 'main', url: 'https://github.com/mfugate1/server-management'
-    ansiblePlaybook credentialsId: 'jenkins-ssh', disableHostKeyChecking: true, inventory: 'hosts', playbook: "playbooks/${params.playbook}"
+    withCredentials([azureServicePrincipal('az-vault')]) {
+        ansiblePlaybook credentialsId: 'jenkins-ssh', disableHostKeyChecking: true, inventory: 'hosts', playbook: "playbooks/${params.playbook}"
+    }
 }
 '''
 
