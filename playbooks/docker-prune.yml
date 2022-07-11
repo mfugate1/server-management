@@ -8,3 +8,4 @@
         images: true
         networks: true
         volumes: true
+        timeout: 1800
