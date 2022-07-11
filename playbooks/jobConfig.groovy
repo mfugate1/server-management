@@ -1,25 +1,7 @@
-freeStyleJob("Playbook--Apt-Update") {
-    scm {
-        github("mfugate1/server-management", "refs/heads/main")
-    }
-    triggers {
-        cron {
-            spec("H 6 * * *")
-        }
-    }
-    steps {
-        ansiblePlaybookBuilder {
-            playbook("playbooks/apt-update.yml")
-            inventory {
-                inventoryPath {
-                    path("hosts")
-                }
-            }
-            credentialsId("jenkins-ssh")
-            disableHostKeyChecking(true)
-        }
-    }
-}
+String cronSchedule = '''\
+5 2 * * * %playbook=docker-prune.yml
+5 3 * * * %playbook=apt-update.yml
+'''
 
 String playbookScript = '''\
 node ('built-in') {
@@ -58,6 +40,15 @@ pipelineJob("Run-Ansible-Playbook") {
         choice {
             name("playbook")
             choices(workspace.listFiles().collect{it.getName()}.findAll{it.endsWith(".yml")})
+        }
+    }
+    properties {
+        pipelineTriggers {
+            triggers {
+                parameterizedCron {
+                    parameterizedSpecification(cronSchedule)
+                }
+            }
         }
     }
 }
