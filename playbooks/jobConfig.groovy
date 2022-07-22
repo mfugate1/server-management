@@ -2,7 +2,7 @@ import com.cloudbees.plugins.credentials.Credentials
 import com.cloudbees.plugins.credentials.CredentialsProvider
 import jenkins.model.Jenkins
 
-String token = CredentialsProvider.lookupCredentials (
+String webhookToken = CredentialsProvider.lookupCredentials (
     Credentials.class,
     Jenkins.get(),
     null,
@@ -61,7 +61,7 @@ pipelineJob("Run-Ansible-Playbook") {
                 }
                 GenericTrigger {
                     causeString('Webhook')
-                    token(token)
+                    token(webhookToken)
                     regexpFilterText("")
                     regexpFilterExpression("")
                     overrideQuietPeriod(true)
