@@ -1,3 +1,14 @@
+import com.cloudbees.plugins.credentials.Credentials
+import com.cloudbees.plugins.credentials.CredentialsProvider
+import jenkins.model.Jenkins
+
+String token = CredentialsProvider.lookupCredentials (
+    Credentials.class,
+    Jenkins.get(),
+    null,
+    null
+).find{it.id == 'RUN-ANSIBLE-PLAYBOOK-TOKEN'}.secret
+
 String cronSchedule = '''\
 5 2 * * * %playbook=docker-prune.yml
 5 3 * * * %playbook=apt-update.yml
@@ -47,6 +58,19 @@ pipelineJob("Run-Ansible-Playbook") {
             triggers {
                 parameterizedCron {
                     parameterizedSpecification(cronSchedule)
+                }
+                GenericTrigger {
+                    causeString('Webhook')
+                    token(token)
+                    regexpFilterText("")
+                    regexpFilterExpression("")
+                    overrideQuietPeriod(true)
+                    genericRequestVariables {
+                        genericRequestVariable {
+                            key('playbook')
+                            regexpFilter("")
+                        }
+                    }
                 }
             }
         }
