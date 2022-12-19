@@ -1,0 +1,14 @@
+- name: Create a PS5-MQTT Container
+  hosts: ps5mqtt
+  tasks:
+    - name: PS5-MQTT Container
+      community.docker.docker_container:
+        name: ps5mqtt
+        image: ghcr.io/funkeyflo/ps5-mqtt/amd64:latest
+        pull: true
+        restart_policy: unless-stopped
+        entrypoint: /config/run.sh
+        env:
+          MQTT_HOST: localhost
+          MQTT_PORT: 1883
+          PSN_ACCOUNTS: "[{\"username\": \"{{ lookup('env', 'PSN-USER') }}\", \"npsso\": \"{{ lookup('env', 'PSN-NPSSO') }}\"}]"
