@@ -22,6 +22,8 @@ node ('built-in') {
         'HASS-ALEXA-CLIENT-SECRET',
         'HASS-DB-PASSWORD',
         'LIVINGROOM-TABLET-FULLY-KIOSK-PASSWORD',
+        'PSN-USER',
+        'PSN-NPSSO',
         'SLEEPIQ-USERNAME',
         'SLEEPIQ-PASSWORD',
         'XIAOMI-VACUUM-TOKEN',
