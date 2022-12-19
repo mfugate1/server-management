@@ -10,5 +10,5 @@
         entrypoint: /config/run.sh
         env:
           MQTT_HOST: localhost
-          MQTT_PORT: 1883
+          MQTT_PORT: "1883"
           PSN_ACCOUNTS: "[{\"username\": \"{{ lookup('env', 'PSN-USER') }}\", \"npsso\": \"{{ lookup('env', 'PSN-NPSSO') }}\"}]"
