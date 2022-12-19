@@ -17,6 +17,7 @@
       ansible.builtin.copy:
         src: files/ps5mqtt/run.sh
         dest: /docker/ps5mqtt/run.sh
+        mode: "0777"
     - name: PS5-MQTT Container
       community.docker.docker_container:
         name: ps5mqtt
