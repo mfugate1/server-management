@@ -25,6 +25,6 @@
         restart_policy: unless-stopped
         entrypoint: /config/run.sh
         env:
-          CONFIG_PATH: "/docker/ps5mqtt/config.json"
+          CONFIG_PATH: "/config/config.json"
         volumes:
           - /docker/ps5mqtt:/config
