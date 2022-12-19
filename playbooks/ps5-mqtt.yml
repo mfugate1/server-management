@@ -27,5 +27,7 @@
         entrypoint: /config/run.sh
         env:
           CONFIG_PATH: "/config/config.json"
+        published_ports:
+          - 8645:8645
         volumes:
           - /docker/ps5mqtt:/config

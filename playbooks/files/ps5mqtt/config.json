@@ -8,5 +8,11 @@
             "username": "{{ lookup('env', 'PSN-USER') }}",
             "npsso": "{{ lookup('env', 'PSN-NPSSO') }}"
         }
-    ]
+    ],
+    "account_check_interval": 5000,
+    "device_check_interval": 5000,
+    "device_discovery_interval": 60000,
+    "include_ps4_devices": false,
+    "credentialsStoragePath": "/config/credentials.json",
+    "frontendPort": "8645"
 }
