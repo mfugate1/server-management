@@ -1,14 +1,5 @@
 - name: Home Assistant
   hosts: homeassistant
-  vars:
-    secrets_list:
-      - FITNESS_DB_PASSWORD
-      - HASS_ALEXA_CLIENT_ID
-      - HASS_ALEXA_CLIENT_SECRET
-      - HASS_DB_PASSWORD
-      - XIAOMI_VACUUM_TOKEN
-      - XIAOMI_VACUUM_USERNAME
-      - XIAOMI_VACUUM_PASSWORD
   tasks:
     - name: Install git and docker-py
       become: true
