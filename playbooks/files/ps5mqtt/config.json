@@ -6,7 +6,8 @@
     "psn_accounts": [
         {
             "username": "{{ lookup('env', 'PSN-USER') }}",
-            "npsso": "{{ lookup('env', 'PSN-NPSSO') }}"
+            "npsso": "{{ lookup('env', 'PSN-NPSSO') }}",
+            "preferred_ps5": "78C8818DF671"
         }
     ],
     "account_check_interval": 5000,
