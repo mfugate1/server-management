@@ -1,6 +1,22 @@
 - name: Create a PS5-MQTT Container
   hosts: ps5mqtt
   tasks:
+    - name: Create ps5mqtt config directory
+      ansible.builtin.file:
+        path: /docker/ps5mqtt
+        state: directory
+        owner: jenkins
+        group: jenkins
+    - name: Create config file
+      ansible.builtin.template:
+        src: files/ps5mqtt/config.json
+        dest: /docker/ps5mqtt/config.json
+        owner: jenkins
+        mode: "0600"
+    - name: Create run.sh
+      ansible.builtin.copy:
+        src: files/ps5mqtt/run.sh
+        dest: /docker/ps5mqtt/run.sh
     - name: PS5-MQTT Container
       community.docker.docker_container:
         name: ps5mqtt
@@ -9,6 +25,6 @@
         restart_policy: unless-stopped
         entrypoint: /config/run.sh
         env:
-          MQTT_HOST: localhost
-          MQTT_PORT: "1883"
-          PSN_ACCOUNTS: "[{\"username\": \"{{ lookup('env', 'PSN-USER') }}\", \"npsso\": \"{{ lookup('env', 'PSN-NPSSO') }}\"}]"
+          CONFIG_PATH: "/docker/ps5mqtt/config.json"
+        volumes:
+          - /docker/ps5mqtt:/config

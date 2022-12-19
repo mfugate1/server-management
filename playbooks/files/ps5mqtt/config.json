@@ -1,0 +1,12 @@
+{
+    "mqtt": {
+        "host": "127.0.0.1",
+        "port": "1883"
+    },
+    "psn_accounts": [
+        {
+            "username": "{{ lookup('env', 'PSN-USER') }}",
+            "npsso": "{{ lookup('env', 'PSN-NPSSO') }}"
+        }
+    ]
+}
