@@ -26,6 +26,8 @@ node ('built-in') {
         'PSN-NPSSO',
         'SLEEPIQ-USERNAME',
         'SLEEPIQ-PASSWORD',
+        'SPOTIFY_SP_DC',
+        'SPOTIFY_SP_KEY',
         'XIAOMI-VACUUM-TOKEN',
         'XIAOMI-VACUUM-USERNAME',
         'XIAOMI-VACUUM-PASSWORD'
