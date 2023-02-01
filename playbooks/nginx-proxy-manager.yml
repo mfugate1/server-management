@@ -21,7 +21,7 @@
         state: directory
         owner: jenkins
         group: jenkins
-    - name: Home Assistant Container
+    - name: Nginx Proxy Manager Container
       community.docker.docker_container:
         name: nginx-proxy-manager
         image: jc21/nginx-proxy-manager:latest
