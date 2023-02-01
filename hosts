@@ -56,3 +56,6 @@ docker1
 
 [ps5mqtt]
 docker1
+
+[nginxproxymanager]
+docker1
