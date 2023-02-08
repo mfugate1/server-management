@@ -17,6 +17,7 @@
         name: zigbee2mqtt
         image: koenkk/zigbee2mqtt:latest
         restart_policy: unless-stopped
+        pull: true
         devices:
           - /dev/ttyUSB0:/dev/ttyUSB0
         env:
