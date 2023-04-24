@@ -28,6 +28,7 @@ node ('built-in') {
         'SLEEPIQ-PASSWORD',
         'SPOTIFY-SP-DC',
         'SPOTIFY-SP-KEY',
+        'TODOIST-API-TOKEN',
         'XIAOMI-VACUUM-TOKEN',
         'XIAOMI-VACUUM-USERNAME',
         'XIAOMI-VACUUM-PASSWORD'
