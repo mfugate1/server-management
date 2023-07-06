@@ -22,7 +22,7 @@
     - name: Home Assistant Container
       community.docker.docker_container:
         name: home-assistant
-        image: homeassistant/home-assistant:latest
+        image: ghcr.io/home-assistant/home-assistant:stable
         restart_policy: unless-stopped
         network_mode: host
         privileged: true
