@@ -15,6 +15,7 @@ String cronSchedule = '''\
 '''
 
 String playbookScript = '''\
+currentBuild.displayName = params.playbook
 node ('built-in') {
     List credentialsToLoad = [
         'FITNESS-DB-PASSWORD',
