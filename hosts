@@ -9,6 +9,7 @@ docker1 ansible_host=192.168.1.86
 [docker]
 basement-squeezebox.local
 docker1
+garage-squeezebox.local
 livingroom-squeezebox.local
 office-zigbee.local
 
@@ -35,6 +36,7 @@ garage-squeezebox.local
 [apt]
 basement-squeezebox.local
 livingroom-squeezebox.local
+garage-squeezebox.local
 office-zigbee.local
 docker1
 
