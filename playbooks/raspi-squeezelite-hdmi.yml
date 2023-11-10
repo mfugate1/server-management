@@ -10,5 +10,5 @@
         env:
           SERVER: 192.168.1.32
           CLIENTNAME: "{{ inventory_hostname | split('-') | first }}"
-          SOUNDDEVICE: iec958:CARD=vc4hdmi,DEV=0
+          SOUNDDEVICE: iec958:CARD=vc4hdmi0,DEV=0
           CLIENTMAC: "{{ CLIENTMAC }}"
