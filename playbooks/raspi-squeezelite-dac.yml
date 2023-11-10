@@ -1,5 +1,5 @@
 - name: Raspberry Pi Squeezelite
-  hosts: "{{ host | default('raspi_squeezelite') }}"
+  hosts: "{{ host | default('raspi_squeezelite_dac') }}"
   tasks:
     - name: Remove dtparam=audio=on from /boot/config.txt
       become: true

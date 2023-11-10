@@ -1,5 +1,5 @@
 basement-squeezebox.local ansible_host=192.168.1.77 CLIENTMAC=22:33:44:55:66:77 DTOVERLAY=hifiberry-dac
-garage-squeezebox.local ansible_host=192.168.1.171
+garage-squeezebox.local ansible_host=192.168.1.107 CLIENTMAC=33:44:55:66:77:88
 livingroom-squeezebox.local ansible_host=192.168.1.130 CLIENTMAC=11:22:33:44:55:66 DTOVERLAY=hifiberry-dac
 office-rtl433.local ansible_host=192.168.1.161
 office-zigbee.local ansible_host=192.168.1.68
@@ -25,9 +25,12 @@ office-rtl433.local
 livingroom-squeezebox.local
 basement-squeezebox.local
 
-[raspi_squeezelite]
+[raspi_squeezelite_dac]
 livingroom-squeezebox.local 
 basement-squeezebox.local 
+
+[raspi_squeezelite_hdmi]
+garage-squeezebox.local
 
 [apt]
 basement-squeezebox.local

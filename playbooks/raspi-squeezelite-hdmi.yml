@@ -1,5 +1,5 @@
 - name: Raspberry Pi Squeezelite
-  hosts: "{{ host | default('raspi_squeezelite') }}"
+  hosts: "{{ host | default('raspi_squeezelite_hdmi') }}"
   tasks:
     - name: Start Squeezelite Docker Container
       community.docker.docker_container:
