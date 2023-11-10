@@ -1,0 +1,14 @@
+- name: Raspberry Pi Squeezelite
+  hosts: "{{ host | default('raspi_squeezelite') }}"
+  tasks:
+    - name: Start Squeezelite Docker Container
+      community.docker.docker_container:
+        name: squeezelite
+        image: jakobengdahl/rpi-squeezelite:latest
+        restart_policy: unless-stopped
+        privileged: true
+        env:
+          SERVER: 192.168.1.32
+          CLIENTNAME: "{{ inventory_hostname | split('-') | first }}"
+          SOUNDDEVICE: iec958:CARD=vc4hdmi,DEV=0
+          CLIENTMAC: "{{ CLIENTMAC }}"
