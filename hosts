@@ -55,5 +55,5 @@ docker1
 [nginxproxymanager]
 docker1
 
-[ubuntu-docker]
+[ubuntu_docker]
 paperless
