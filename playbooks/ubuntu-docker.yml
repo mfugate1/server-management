@@ -1,8 +1,5 @@
 - name: Ubuntu Docker Server Configuration
   hosts: "{{ host | default('ubuntu_docker') }}"
-  roles:
-    - role: jenkins-ssh
-    - role: jenkins-passwordless-sudo
   tasks:
     - name: Update and upgrade packages
       become: true
@@ -15,11 +12,11 @@
       ansible.builtin.apt:
         update_cache: true
         name:
+          - apt-transport-https
           - ca-certificates
           - curl
-          - gnupg
-          - lsb-release
           - python3-docker
+          - software-properties-common
     - name: Add Docker GPG key
       become: true
       ansible.builtin.shell:
@@ -34,43 +31,17 @@
         cmd: >-
           echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg]
           https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
-      args:
-        creates: /usr/bin/docker
     - name: Install Docker Engine
       become: true
       ansible.builtin.apt:
         update_cache: true
         name:
           - docker-ce
-          - docker-ce-cli
-          - containerd.io
+      args:
+        creates: /usr/bin/docker
     - name: Add jenkins user to docker group
       become: true
       ansible.builtin.user:
         name: jenkins
         groups: docker
         append: true
-    - name: Create daemon.json for TCP connections
-      become: true
-      ansible.builtin.copy:
-        content: '{"hosts": ["tcp://0.0.0.0:2375", "unix:///var/run/docker.sock"]}'
-        dest: /etc/docker/daemon.json
-    - name: Create docker service directory
-      become: true
-      ansible.builtin.file:
-        path: /etc/systemd/system/docker.service.d
-        state: directory
-    - name: Override docker service conf
-      become: true
-      ansible.builtin.copy:
-        content: |
-          [Service]
-          ExecStart=
-          ExecStart=/usr/bin/dockerd
-        dest: /etc/systemd/system/docker.service.d/override.conf
-    - name: Reload systemd daemon
-      become: true
-      ansible.builtin.shell: systemctl daemon-reload
-    - name: Reboot
-      become: true
-      reboot:

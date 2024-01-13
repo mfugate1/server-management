@@ -5,6 +5,7 @@ office-rtl433.local ansible_host=192.168.1.161
 office-zigbee.local ansible_host=192.168.1.68
 patio-squeezebox.local ansible_host=192.168.1.90 CLIENTMAC=00:11:22:33:44:55 DTOVERLAY=hifiberry-dacplus
 docker1 ansible_host=192.168.1.86
+paperless ansible_host=192.168.1.145
 
 [docker]
 basement-squeezebox.local
@@ -12,6 +13,7 @@ docker1
 garage-squeezebox.local
 livingroom-squeezebox.local
 office-zigbee.local
+paperless
 
 [raspi]
 basement-squeezebox.local
@@ -39,6 +41,7 @@ livingroom-squeezebox.local
 garage-squeezebox.local
 office-zigbee.local
 docker1
+paperless
 
 [zigbee2mqtt]
 office-zigbee.local
@@ -51,3 +54,6 @@ docker1
 
 [nginxproxymanager]
 docker1
+
+[ubuntu-docker]
+paperless
