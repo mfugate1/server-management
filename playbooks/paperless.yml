@@ -1,0 +1,70 @@
+# Run ubuntu-docker playbook first
+
+- name: Paperless-NGX
+  hosts: paperless
+  tasks:
+    - name: Create docker network
+      community.docker.docker_network:
+        name: paperless-network
+    - name: Create docker directories
+      become: true
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: jenkins
+        group: jenkins
+      loop:
+        - /docker/redis
+        - /docker/paperless/data
+        - /docker/paperless/media
+        - /docker/paperless/export
+        - /docker/paperless/consume
+    - name: Redis Container
+      community.docker.docker_container:
+        name: broker
+        image: docker.io/library/redis:7
+        restart_policy: unless-stopped
+        pull: true
+        network_mode: paperless-network
+        volumes:
+          - /docker/redis:/data
+    - name: Gotenberg Container
+      community.docker.docker_container:
+        name: gotenberg
+        image: docker.io/gotenberg/gotenberg:7.10
+        restart_policy: unless-stopped
+        pull: true
+        network_mode: paperless-network
+        command:
+          - gotenberg
+          - "--chromium-disable-javascript=true"
+          - "--chromium-allow-list=file:///tmp/.*"
+    - name: Tika Container
+      community.docker.docker_container:
+        name: tika
+        image: ghcr.io/paperless-ngx/tika:latest
+        restart_policy: unless-stopped
+        pull: true
+        network_mode: paperless-network
+    - name: Paperless Webserver Container
+      community.docker.docker_container:
+        name: paperless
+        image: ghcr.io/paperless-ngx/paperless-ngx:latest
+        restart_policy: unless-stopped
+        pull: true
+        network_mode: paperless-network
+        published_ports:
+          - 8000:8000
+        volumes:
+          - /docker/paperless/data:/usr/src/paperless/data
+          - /docker/paperless/media:/usr/src/paperless/media
+          - /docker/paperless/export:/usr/src/paperless/export
+          - /docker/paperless/consume:/usr/src/paperless/consume
+        env:
+          PAPERLESS_REDIS: redis://broker:6379
+          PAPERLESS_DBENGINE: mariadb
+          PAPERLESS_DBHOST: 192.168.1.87
+          PAPERLESS_DBPORT: 3306
+          PAPERLESS_TIKA_ENABLED: 1
+          PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://gotenberg:3000
+          PAPERLESS_TIKA_ENDPOINT: http://tika:9998
