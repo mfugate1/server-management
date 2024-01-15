@@ -6,6 +6,12 @@
     - name: Create docker network
       community.docker.docker_network:
         name: paperless-network
+    - name: Create docker volumes
+      community.docker.docker_volume:
+        name: "{{ item }}"
+      loop:
+        - redis_data
+        - paperless_data
     - name: Create docker directories
       become: true
       ansible.builtin.file:
@@ -14,8 +20,6 @@
         owner: jenkins
         group: jenkins
       loop:
-        - /docker/redis
-        - /docker/paperless/data
         - /docker/paperless/media
         - /docker/paperless/export
         - /docker/paperless/consume
@@ -27,7 +31,7 @@
         pull: true
         network_mode: paperless-network
         volumes:
-          - /docker/redis:/data
+          - redis_data:/data
     - name: Gotenberg Container
       community.docker.docker_container:
         name: gotenberg
@@ -56,7 +60,7 @@
         published_ports:
           - 8000:8000
         volumes:
-          - /docker/paperless/data:/usr/src/paperless/data
+          - paperless_data:/usr/src/paperless/data
           - /docker/paperless/media:/usr/src/paperless/media
           - /docker/paperless/export:/usr/src/paperless/export
           - /docker/paperless/consume:/usr/src/paperless/consume
