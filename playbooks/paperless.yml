@@ -63,8 +63,8 @@
         env:
           PAPERLESS_REDIS: redis://broker:6379
           PAPERLESS_DBENGINE: mariadb
-          PAPERLESS_DBHOST: 192.168.1.87
-          PAPERLESS_DBPORT: 3306
-          PAPERLESS_TIKA_ENABLED: 1
+          PAPERLESS_DBHOST: "192.168.1.87"
+          PAPERLESS_DBPORT: "3306"
+          PAPERLESS_TIKA_ENABLED: "1"
           PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://gotenberg:3000
           PAPERLESS_TIKA_ENDPOINT: http://tika:9998
