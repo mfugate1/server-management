@@ -1,59 +1,60 @@
-basement-squeezebox.local ansible_host=192.168.1.77 CLIENTMAC=22:33:44:55:66:77 DTOVERLAY=hifiberry-dac
-garage-squeezebox.local ansible_host=192.168.1.107 CLIENTMAC=33:44:55:66:77:88
-livingroom-squeezebox.local ansible_host=192.168.1.130 CLIENTMAC=11:22:33:44:55:66 DTOVERLAY=hifiberry-dac
-office-rtl433.local ansible_host=192.168.1.161
-office-zigbee.local ansible_host=192.168.1.68
-patio-squeezebox.local ansible_host=192.168.1.90 CLIENTMAC=00:11:22:33:44:55 DTOVERLAY=hifiberry-dacplus
 docker1 ansible_host=192.168.1.86
 paperless ansible_host=192.168.1.145
-
-[docker]
-basement-squeezebox.local
-docker1
-garage-squeezebox.local
-livingroom-squeezebox.local
-office-zigbee.local
-paperless
-
-[raspi]
-basement-squeezebox.local
-garage-squeezebox.local
-livingroom-squeezebox.local
-office-zigbee.local
-
-[rtl433]
-office-rtl433.local
-
-[glances]
-livingroom-squeezebox.local
-basement-squeezebox.local
-
-[raspi_squeezelite_dac]
-livingroom-squeezebox.local 
-basement-squeezebox.local 
-
-[raspi_squeezelite_hdmi]
-garage-squeezebox.local
+squeezebox-garage ansible_host=192.168.1.107 CLIENTMAC=33:44:55:66:77:88
+squeezebox-livingroom ansible_host=192.168.1.130 CLIENTMAC=11:22:33:44:55:66 DTOVERLAY=hifiberry-dac
+squeezebox-workout-room ansible_host=192.168.1.77 CLIENTMAC=22:33:44:55:66:77 DTOVERLAY=hifiberry-dac
+zigbee2mqtt ansible_host=192.168.1.68
+zwavejs ansible_host=192.168.1.164
 
 [apt]
-basement-squeezebox.local
-livingroom-squeezebox.local
-garage-squeezebox.local
-office-zigbee.local
+squeezebox-workout-room
+squeezebox-livingroom
+squeezebox-garage
+zigbee2mqtt
 docker1
 paperless
 
-[zigbee2mqtt]
-office-zigbee.local
+[docker]
+squeezebox-workout-room
+docker1
+squeezebox-garage
+squeezebox-livingroom
+zigbee2mqtt
+paperless
+zwavejs
+
+[glances]
+squeezebox-garage
+squeezebox-livingroom
+squeezebox-workout-room
 
 [homeassistant]
-docker1
-
-[ps5mqtt]
 docker1
 
 [nginxproxymanager]
 docker1
 
+[ps5mqtt]
+docker1
+
+[raspi]
+squeezebox-workout-room
+squeezebox-garage
+squeezebox-livingroom
+zigbee2mqtt
+
+[raspi_squeezelite_dac]
+squeezebox-livingroom 
+squeezebox-workout-room 
+
+[raspi_squeezelite_hdmi]
+squeezebox-garage
+
 [ubuntu_docker]
 paperless
+
+[zigbee2mqtt]
+zigbee2mqtt
+
+[zwavejs]
+zwavejs
