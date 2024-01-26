@@ -1,5 +1,5 @@
 docker1 ansible_host=192.168.1.86
-paperless ansible_host=192.168.1.145
+paperless ansible_host=192.168.1.86
 squeezebox-garage ansible_host=192.168.1.107 CLIENTMAC=33:44:55:66:77:88
 squeezebox-livingroom ansible_host=192.168.1.130 CLIENTMAC=11:22:33:44:55:66 DTOVERLAY=hifiberry-dac
 squeezebox-workout-room ansible_host=192.168.1.77 CLIENTMAC=22:33:44:55:66:77 DTOVERLAY=hifiberry-dac
@@ -12,7 +12,7 @@ squeezebox-livingroom
 squeezebox-garage
 zigbee2mqtt
 docker1
-paperless
+#paperless
 
 [docker]
 squeezebox-workout-room
@@ -20,7 +20,7 @@ docker1
 squeezebox-garage
 squeezebox-livingroom
 zigbee2mqtt
-paperless
+#paperless
 
 [glances]
 squeezebox-garage
