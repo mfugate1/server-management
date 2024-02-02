@@ -1,0 +1,48 @@
+mqtt:
+  host: 192.168.1.86
+cameras:
+  driveway:
+    ffmpeg:
+      inputs:
+        - path: "rtsp://frigate:{{ lookup('env', 'FRIGATE_OUTER_GARAGE_CAMERA_PWD') }}@192.168.1.166:554/11"
+          roles:
+            - detect
+            - rtmp
+            - record
+    detect:
+      width: 1920
+      height: 1080
+      fps: 5
+    record:
+      enabled: True
+      retain:
+        days: 30
+      events:
+        pre_capture: 10
+        post_capture: 10
+        retain:
+          default: 120
+    snapshots:
+      enabled: True
+      timestamp: True
+      bounding_box: True
+      retain:
+        default: 120
+    objects:
+      track:
+        - person
+        - car
+      filters:
+        car:
+          mask:
+            - 0,456,516,395,980,485,1228,462,1920,296,1920,0,0,0
+        person:
+          mask:
+            - 0,456,516,395,980,485,1228,462,1920,296,1920,0,0,0
+    motion:
+      mask:
+        - 1463,0,1682,137,752,252,0,299,0,0
+detectors:
+  coral:
+    type: edgetpu
+    device: usb

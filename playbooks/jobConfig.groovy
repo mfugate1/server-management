@@ -19,6 +19,7 @@ currentBuild.displayName = params.playbook
 node ('built-in') {
     List credentialsToLoad = [
         'FITNESS-DB-PASSWORD',
+        'FRIGATE_OUTER_GARAGE_CAMERA_PWD',
         'HASS-ALEXA-CLIENT-ID',
         'HASS-ALEXA-CLIENT-SECRET',
         'HASS-DB-PASSWORD',
@@ -29,10 +30,7 @@ node ('built-in') {
         'SLEEPIQ-PASSWORD',
         'SPOTIFY-SP-DC',
         'SPOTIFY-SP-KEY',
-        'TODOIST-API-TOKEN',
-        'XIAOMI-VACUUM-TOKEN',
-        'XIAOMI-VACUUM-USERNAME',
-        'XIAOMI-VACUUM-PASSWORD'
+        'TODOIST-API-TOKEN'
     ]
 
     credentialsToLoad = credentialsToLoad.collect{string(credentialsId: it, variable: it)}

@@ -1,0 +1,36 @@
+- name: Frigate
+  hosts: frigate
+  tasks:
+    - name: Create frigate config directory
+      become: true
+      ansible.builtin.file:
+        path: /docker/frigate
+        state: directory
+        owner: jenkins
+        group: jenkins
+    - name: Create frigate config
+      ansible.builtin.template:
+        src: files/frigate/config.yml
+        dest: /docker/frigate/config.yml
+    - name: Create media volumes
+      community.docker.docker_volume:
+        name: frigate_media
+    - name: Frigate container
+      community.docker.docker_container:
+        name: frigate
+        image: ghcr.io/blakeblackshear/frigate:stable
+        restart_policy: unless-stopped
+        pull: true
+        published_ports:
+          - 1935:1935
+          - 5000:5000
+          - 8554:8554
+          - 8555:8555/tcp
+          - 8555:8555/udp
+        volumes:
+          - /etc/localtime:/etc/localtime:ro
+          - /docker/frigate:/config
+          - frigate_media:/media/frigate
+        devices:
+          - /dev/bus/usb:/dev/bus/usb
+          - /dev/dri/renderD128
