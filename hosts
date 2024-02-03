@@ -8,18 +8,20 @@ zigbee2mqtt ansible_host=192.168.1.68
 zwavejs ansible_host=192.168.1.164
 
 [apt]
-squeezebox-workout-room
-squeezebox-livingroom
-squeezebox-garage
-zigbee2mqtt
 docker1
+frigate
+squeezebox-garage
+squeezebox-livingroom
+squeezebox-workout-room
+zigbee2mqtt
 #paperless
 
 [docker]
-squeezebox-workout-room
 docker1
+frigate
 squeezebox-garage
 squeezebox-livingroom
+squeezebox-workout-room
 zigbee2mqtt
 #paperless
 
@@ -51,10 +53,5 @@ squeezebox-workout-room
 squeezebox-garage
 
 [ubuntu_docker]
+frigate
 paperless
-
-[zigbee2mqtt]
-zigbee2mqtt
-
-[zwavejs]
-zwavejs
