@@ -1,0 +1,21 @@
+- name: Unifi
+  hosts: unifi
+  tasks:
+    - name: Create docker volumes
+      community.docker.docker_volume:
+        name: unifi-data
+    - name: Create unifi container
+      community.docker.docker_container:
+        name: unifi
+        image: jacobalberty/unifi:latest
+        restart_policy: unless-stopped
+        pull: true
+        state: stopped
+        published_ports:
+          - 3478:3478/udp
+          - 8080:8080
+          - 8443:8443
+        volumes:
+          unifi-data:/unifi
+        env:
+          TZ: America/New_York
