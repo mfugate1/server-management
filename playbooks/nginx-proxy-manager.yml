@@ -13,7 +13,6 @@
         image: jc21/nginx-proxy-manager:latest
         restart_policy: unless-stopped
         pull: true
-        state: stopped
         published_ports:
           - 80:80
           - 81:81
