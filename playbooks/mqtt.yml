@@ -1,0 +1,28 @@
+- name: MQTT Broker
+  hosts: mqtt
+  tasks:
+    - name: Create config directory
+      become: true
+      ansible.builtin.file:
+        path: /docker/mqtt
+        state: directory
+        owner: jenkins
+    - name: Create config file
+      ansible.builtin.copy:
+        src: files/mosquitto/mosquitto.conf
+        dest: /docker/mqtt/mosquitto.conf
+    - name: Create docker volume
+      community.docker.docker_volume:
+        name: mqtt-data
+    - name: Create MQTT broker container
+      community.docker.docker_container:
+        name: mqtt-broker
+        image: eclipse-mosquitto:latest
+        restart_policy: unless-stopped
+        pull: true
+        published_ports:
+          - 1883:1883
+          - 9001:9001
+        volumes:
+          - mqtt-data:/var/lib/mysql
+          - /docker/mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf
