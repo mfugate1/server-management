@@ -10,7 +10,6 @@
         image: jacobalberty/unifi:latest
         restart_policy: unless-stopped
         pull: true
-        state: stopped
         published_ports:
           - 3478:3478/udp
           - 8080:8080
