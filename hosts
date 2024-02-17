@@ -1,6 +1,6 @@
 docker1 ansible_host=192.168.1.86
+docker2 ansible_host=192.168.1.17
 frigate ansible_host=192.168.1.169
-paperless ansible_host=192.168.1.86
 squeezebox-garage ansible_host=192.168.1.107 CLIENTMAC=33:44:55:66:77:88
 squeezebox-livingroom ansible_host=192.168.1.130 CLIENTMAC=11:22:33:44:55:66 DTOVERLAY=hifiberry-dac
 squeezebox-workout-room ansible_host=192.168.1.77 CLIENTMAC=22:33:44:55:66:77 DTOVERLAY=hifiberry-dac
@@ -9,21 +9,21 @@ zwavejs ansible_host=192.168.1.164
 
 [apt]
 docker1
+docker2
 frigate
 squeezebox-garage
 squeezebox-livingroom
 squeezebox-workout-room
 zigbee2mqtt
-#paperless
 
 [docker]
 docker1
+docker2
 frigate
 squeezebox-garage
 squeezebox-livingroom
 squeezebox-workout-room
 zigbee2mqtt
-#paperless
 
 [glances]
 squeezebox-garage
@@ -35,6 +35,9 @@ docker1
 
 [nginxproxymanager]
 docker1
+
+[paperless]
+docker2
 
 [ps5mqtt]
 docker1
@@ -53,5 +56,5 @@ squeezebox-workout-room
 squeezebox-garage
 
 [ubuntu_docker]
+docker2
 frigate
-paperless
