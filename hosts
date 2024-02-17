@@ -61,3 +61,6 @@ squeezebox-garage
 [ubuntu_docker]
 docker2
 frigate
+
+[unifi]
+docker1
