@@ -30,8 +30,7 @@
         image: mariadb:lts
         restart_policy: unless-stopped
         pull: true
-        published_ports:
-          - 3306:3306
+        network_mode: paperless-network
         volumes:
           - mariadb-data:/var/lib/mysql
         env:
