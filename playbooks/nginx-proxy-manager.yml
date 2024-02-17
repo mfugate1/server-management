@@ -1,36 +1,23 @@
 - name: Nginx Proxy Manager
   hosts: nginxproxymanager
   tasks:
-    - name: Install docker-py
-      become: true
-      ansible.builtin.apt:
-        update_cache: true
-        name:
-          - python3-docker
-    - name: Create Nginx Proxy Manager data directory
-      become: true
-      ansible.builtin.file:
-        path: /docker/nginx-proxy-manager/data
-        state: directory
-        owner: jenkins
-        group: jenkins
-    - name: Create Nginx Proxy Manager letsencrypt directory
-      become: true
-      ansible.builtin.file:
-        path: /docker/nginx-proxy-manager/letsencrypt
-        state: directory
-        owner: jenkins
-        group: jenkins
+    - name: Create docker volumes
+      community.docker.docker_volume:
+        name: "{{ item }}"
+      loop:
+        - nginx-proxy-manager-data
+        - nginx-proxy-manager-letsencrypt
     - name: Nginx Proxy Manager Container
       community.docker.docker_container:
         name: nginx-proxy-manager
         image: jc21/nginx-proxy-manager:latest
         restart_policy: unless-stopped
         pull: true
+        state: stopped
         published_ports:
           - 80:80
           - 81:81
           - 443:443
         volumes:
-          - /docker/nginx-proxy-manager/data:/data
-          - /docker/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
+          - nginx-proxy-manager-data:/data
+          - nginx-proxy-manager-letsencrypt:/etc/letsencrypt
