@@ -33,6 +33,9 @@ squeezebox-workout-room
 [homeassistant]
 docker1
 
+[mqtt]
+docker1
+
 [nginxproxymanager]
 docker1
 
