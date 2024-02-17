@@ -35,6 +35,6 @@
                 "username": "{{ lookup('env', 'PSN_USER') }}",
                 "npsso": "{{ lookup('env', 'PSN_NPSSO') }}"
               }
-            ]
+            ] | string
         volumes:
           - /docker/ps5mqtt:/config
