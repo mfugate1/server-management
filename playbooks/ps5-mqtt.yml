@@ -1,6 +1,10 @@
 - name: Create a PS5-MQTT Container
   hosts: ps5mqtt
   tasks:
+    - set_fact:
+        psn_accounts:
+          - username: "{{ lookup('env', 'PSN_USER') }}"
+            npsso: "{{ lookup('env', 'PSN_NPSSO') }}"
     - name: Create ps5mqtt config directory
       ansible.builtin.file:
         path: /docker/ps5mqtt
@@ -29,12 +33,6 @@
           INCLUDE_PS4_DEVICES: "false"
           MQTT_HOST: "127.0.0.1"
           MQTT_PORT: "1883"
-          PSN_ACCOUNTS: >
-            [
-              {
-                "username": "{{ lookup('env', 'PSN_USER') }}",
-                "npsso": "{{ lookup('env', 'PSN_NPSSO') }}"
-              }
-            ] | string
+          PSN_ACCOUNTS: "{{ psn_accounts | string }}"
         volumes:
           - /docker/ps5mqtt:/config
