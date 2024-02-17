@@ -33,6 +33,10 @@
           INCLUDE_PS4_DEVICES: "false"
           MQTT_HOST: "127.0.0.1"
           MQTT_PORT: "1883"
-          PSN_ACCOUNTS: "{{ psn_accounts | to_json | tojson }}"
+
+          # Using | string gives a result with single quotes.
+          # This method results in valid json with double quotes instead. 
+          # Otherwise, ps5-mqtt will throw a parsing error.
+          PSN_ACCOUNTS: "{{ psn_accounts | to_json | tojson }}" 
         volumes:
           - /docker/ps5mqtt:/config
