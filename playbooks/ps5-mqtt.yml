@@ -29,6 +29,12 @@
           INCLUDE_PS4_DEVICES: "false"
           MQTT_HOST: "127.0.0.1"
           MQTT_PORT: "1883"
-          PSN_ACCOUNTS: "[{\"username\": \"{{ lookup('env', 'PSN_USER') }}\", \"npsso\":\"{{ lookup('env', 'PSN_NPSSO') }}\"}]"
+          PSN_ACCOUNTS: >
+            [
+              {
+                "username": "{{ lookup('env', 'PSN_USER') }}",
+                "npsso": "{{ lookup('env', 'PSN_NPSSO') }}"
+              }
+            ]
         volumes:
           - /docker/ps5mqtt:/config
