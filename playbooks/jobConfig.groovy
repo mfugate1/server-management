@@ -23,6 +23,8 @@ node ('built-in') {
         'HASS-ALEXA-CLIENT-ID',
         'HASS-ALEXA-CLIENT-SECRET',
         'HASS-DB-PASSWORD',
+        'HASS_MARIADB_PASSWORD',
+        'HASS_MARIADB_ROOT_PASSWORD',
         'LIVINGROOM-TABLET-FULLY-KIOSK-PASSWORD',
         'PSN-USER',
         'PSN-NPSSO',

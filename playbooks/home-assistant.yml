@@ -8,6 +8,24 @@
         name: 
           - git
           - python3-docker
+    - name: Create docker volumes
+      community.docker.docker_volume:
+        name: mariadb-data
+    - name: MariaDB container
+      community.docker.docker_container:
+        name: hass-mariadb
+        image: mariadb:lts
+        restart_policy: unless-stopped
+        pull: true
+        published_ports:
+          - 3306:3306
+        volumes:
+          - mariadb-data:/var/lib/mysql
+        env:
+          MARIADB_ROOT_PASSWORD: "{{ lookup('env', 'HASS_MARIADB_ROOT_PASSWORD') }}"
+          MARIADB_USER: homeassistant
+          MARIADB_PASSWORD: "{{ lookup('env', 'HASS_MARIADB_PASSWORD') }}"
+          MARIADB_DATABASE: homeassistant
     - name: Checkout Home Assistant config repository
       ansible.builtin.git:
         repo: https://github.com/mfugate1/home-assistant-config.git
