@@ -16,6 +16,7 @@
           - ca-certificates
           - curl
           - python3-docker
+          - python3-boto3
           - software-properties-common
     - name: Add Docker GPG key
       become: true
