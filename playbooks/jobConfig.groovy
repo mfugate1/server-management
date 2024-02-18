@@ -18,6 +18,8 @@ String playbookScript = '''\
 currentBuild.displayName = params.playbook
 node ('built-in') {
     List credentialsToLoad = [
+        'AWS_ACCESS_KEY',
+        'AWS_SECRET_KEY',
         'FITNESS-DB-PASSWORD',
         'FRIGATE_OUTER_GARAGE_CAMERA_PWD',
         'HASS-ALEXA-CLIENT-ID',
