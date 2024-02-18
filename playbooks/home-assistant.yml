@@ -27,6 +27,7 @@
           MARIADB_PASSWORD: "{{ lookup('env', 'HASS_MARIADB_PASSWORD') }}"
           MARIADB_DATABASE: homeassistant
     - name: Checkout Home Assistant config repository
+      register: config_repo
       ansible.builtin.git:
         repo: https://github.com/mfugate1/home-assistant-config.git
         dest: /docker/home-assistant
@@ -38,6 +39,7 @@
         owner: jenkins
         mode: '0600'
     - name: Home Assistant Container
+      register: hass_container
       community.docker.docker_container:
         name: home-assistant
         image: ghcr.io/home-assistant/home-assistant:stable
@@ -64,3 +66,10 @@
           - -f
       register: test_result
       failed_when: "'ERROR' in test_result.stdout"
+    - name: Soft Home Assistant Reload if container didn't change
+      when: config_repo.changed and not hass_container.changed 
+      ansible.builtin.uri:
+        url: "{{ lookup('env', 'HASS_URL') }}/api/services/homeassistant/reload_all"
+        method: POST
+        headers:
+          Authorization: "Bearer {{ lookup('env', 'HASS_TOKEN') }}"
