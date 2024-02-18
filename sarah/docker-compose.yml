@@ -1,0 +1,52 @@
+version: "3.8"
+services:
+  home-assistant:
+    depends_on:
+      - zwavejs
+      - matter-server
+    container_name: home-assistant
+    restart: unless-stopped
+    image: ghcr.io/home-assistant/home-assistant:stable
+    volumes:
+      - hass_config:/config
+      - /etc/localtime:/etc/localtime:ro
+    network_mode: host
+    privileged: true
+  nginx-proxy-manager:
+    container_name: nginx-proxy-manager
+    restart: unless-stopped
+    image: jc21/nginx-proxy-manager:latest
+    ports:
+      - 80:80
+      - 81:81
+      - 443:443
+    volumes:
+      - nginx-data:/data
+      - letsencrypt:/etc/letsencrypt
+  zwavejs:
+    container_name: zwavejs
+    restart: unless-stopped
+    image: zwavejs/zwave-js-ui:latest
+    ports:
+      - 8091:8091
+      - 3000:3000
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
+    volumes:
+      - zwavejs_config:/usr/src/app/store
+  matter-server:
+    image: ghcr.io/home-assistant-libs/python-matter-server:stable
+    container_name: matter-server
+    restart: unless-stopped
+    network_mode: host
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - matter_data:/data/
+      - /run/dbus:/run/dbus:ro
+volumes:
+  matter_data:
+  hass_config:
+  letsencrypt:
+  nginx-data:
+  zwavejs_config:
