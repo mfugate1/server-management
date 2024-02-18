@@ -12,10 +12,10 @@
       ansible.builtin.shell:
         cmd: >
           docker run --rm --network paperless-network mariadb:lts mysqldump 
-            -h paperless-mariadb 
-            -u paperless 
-            -p{{ lookup('env', 'PAPERLESS_MARIADB_PASSWORD') }} 
-            paperless > /docker/paperless-backup/paperless-db-backup-{{ ansible_date_time.date }}.sql
+          -h paperless-mariadb 
+          -u paperless 
+          -p{{ lookup('env', 'PAPERLESS_MARIADB_PASSWORD') }} 
+          paperless > /docker/paperless-backup/paperless-db-backup-{{ ansible_date_time.date }}.sql
     - name: Upload database backup to S3
       community.aws.s3_sync:
         access_key: "{{ lookup('env', 'AWS_ACCESS_KEY') }}"
