@@ -16,6 +16,10 @@
           -u paperless 
           -p{{ lookup('env', 'PAPERLESS_MARIADB_PASSWORD') }} 
           paperless > /docker/paperless-backup/paperless-db-backup-{{ ansible_date_time.date }}.sql
+    - name: Backup media directory
+      ansible.builtin.shell:
+        chdir: /docker/paperless/media
+        cmd: tar -cvzf /docker/paperless-backup/paperless-media-backup-{{ ansible_date_time.date }}.tar.gz .
     - name: Upload database backup to S3
       community.aws.s3_sync:
         access_key: "{{ lookup('env', 'AWS_ACCESS_KEY') }}"
