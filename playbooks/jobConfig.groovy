@@ -7,9 +7,10 @@ String webhookToken = CredentialsProvider.lookupCredentials (
     Jenkins.get(),
     null,
     null
-).find{it.id == 'RUN-ANSIBLE-PLAYBOOK-TOKEN'}.secret
+).find{it.id == 'JENKINS_WEBHOOK_TOKEN'}.secret
 
 String cronSchedule = '''\
+5 1 * * * %playbook=paperless-backup.yml
 5 2 * * * %playbook=docker-prune.yml
 5 3 * * * %playbook=apt-update.yml
 '''
@@ -20,10 +21,7 @@ node ('built-in') {
     List credentialsToLoad = [
         'AWS_ACCESS_KEY',
         'AWS_SECRET_KEY',
-        'FITNESS-DB-PASSWORD',
         'FRIGATE_OUTER_GARAGE_CAMERA_PWD',
-        'HASS-ALEXA-CLIENT-ID',
-        'HASS-ALEXA-CLIENT-SECRET',
         'HASS-DB-PASSWORD',
         'HASS_MARIADB_PASSWORD',
         'HASS_MARIADB_ROOT_PASSWORD',
@@ -36,11 +34,8 @@ node ('built-in') {
         'PAPERLESS_URL',
         'PSN_USER',
         'PSN_NPSSO',
-        'SLEEPIQ-USERNAME',
-        'SLEEPIQ-PASSWORD',
-        'SPOTIFY-SP-DC',
-        'SPOTIFY-SP-KEY',
-        'TODOIST-API-TOKEN'
+        'SPOTIFY_SP_DC',
+        'SPOTIFY_SP_KEY'
     ]
 
     credentialsToLoad = credentialsToLoad.collect{string(credentialsId: it, variable: it)}
