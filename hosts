@@ -33,6 +33,9 @@ squeezebox-workout-room
 [homeassistant]
 docker1
 
+[jenkins]
+docker2
+
 [mqtt]
 docker1
 
