@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  jenkins:
+    container_name: jenkins
+    image: jenkins/jenkins:jdk17
+    ports:
+      - 8080:8080
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+    restart: unless-stopped
+  watchtower:
+    container_name: jenkins-watchtower
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      WATCHTOWER_LABEL_ENABLE: "true"
+    restart: unless-stopped
+volumes:
+  jenkins_home:

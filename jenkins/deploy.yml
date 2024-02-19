@@ -1,0 +1,21 @@
+- name: Deploy Jenkins docker compose
+  hosts: jenkins
+  tasks:
+    - name: Create config directory
+      become: true
+      ansible.builtin.file:
+        path: /docker/jenkins
+        state: directory
+        owner: jenkins
+        group: jenkins
+    - name: Copy docker compose file
+      ansible.builtin.copy:
+        src: jenkins/docker-compose.yml
+        dest: /docker/jenkins/docker-compose.yml
+        owner: jenkins
+        group: jenkins
+        mode: "0400"
+    - name: Run docker compose
+      ansible.builtin.shell:
+        chdir: /docker/jenkins
+        cmd: docker compose up -d
