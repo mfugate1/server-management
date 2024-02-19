@@ -10,7 +10,7 @@
         group: jenkins
     - name: Copy docker compose file
       ansible.builtin.copy:
-        src: jenkins/docker-compose.yml
+        src: docker-compose.yml
         dest: /docker/jenkins/docker-compose.yml
         owner: jenkins
         group: jenkins
