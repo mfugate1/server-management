@@ -30,6 +30,9 @@ squeezebox-garage
 squeezebox-livingroom
 squeezebox-workout-room
 
+[grocy]
+docker2
+
 [homeassistant]
 docker1
 

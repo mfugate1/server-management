@@ -1,0 +1,18 @@
+- name: Deploy grocy
+  hosts: grocy
+  tasks:
+    - name: Create docker volume
+      community.docker.docker_volume:
+        name: grocy-data
+    - name: Create grocy container
+      community.docker.docker_container:
+        name: grocy
+        image: lscr.io/linuxserver/grocy:latest
+        restart_policy: unless-stopped
+        pull: true
+        volumes:
+          - grocy-data:/config
+        published_ports:
+          - 9283:80
+        env:
+          TZ: America/New_York
