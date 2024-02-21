@@ -26,9 +26,7 @@ squeezebox-workout-room
 zigbee2mqtt
 
 [glances]
-squeezebox-garage
-squeezebox-livingroom
-squeezebox-workout-room
+docker2
 
 [grocy]
 docker2

@@ -1,0 +1,16 @@
+- name: Deploy Glances container
+  hosts: glances
+  tasks:
+    - name: Create glances container
+      community.docker.docker_container:
+        name: glances
+        image: nicolargo/glances:latest-full
+        pull: true
+        restart_policy: unless-stopped
+        pid_mode: host
+        env:
+          GLANCES_OPT: "-w"
+        published_ports:
+          - 61208-61209:61208-61209
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock:ro
