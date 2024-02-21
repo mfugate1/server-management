@@ -10,6 +10,8 @@ services:
     labels:
       - com.centurylinklabs.watchtower.enable=true
     restart: unless-stopped
+    environment:
+      TZ: America/New_York
   watchtower:
     container_name: jenkins-watchtower
     image: containrrr/watchtower
