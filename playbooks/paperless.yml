@@ -3,14 +3,23 @@
 - name: Paperless-NGX
   hosts: paperless
   tasks:
-    - name: Create docker network
-      community.docker.docker_network:
-        name: paperless-network
+    - name: Create homeassistant database
+      community.mysql.mysql_db:
+        name: paperless
+        state: present
+        login_user: root
+        login_password: "{{ lookup('env', 'MARIADB_ROOT_PASSWORD') }}"
+    - name: Create homeassistant user
+      community.mysql.mysql_user:
+        name: paperless
+        password: "{{ lookup('env', 'PAPERLESS_MARIADB_PASSWORD') }}"
+        priv: "paperless.*:ALL"
+        login_user: root
+        login_password: "{{ lookup('env', 'MARIADB_ROOT_PASSWORD') }}"
     - name: Create docker volumes
       community.docker.docker_volume:
         name: "{{ item }}"
       loop:
-        - mariadb-data
         - redis_data
         - paperless_data
     - name: Create docker directories
@@ -24,27 +33,13 @@
         - /docker/paperless/media
         - /docker/paperless/export
         - /docker/paperless/consume
-    - name: MariaDB container
-      community.docker.docker_container:
-        name: paperless-mariadb
-        image: mariadb:lts
-        restart_policy: unless-stopped
-        pull: true
-        network_mode: paperless-network
-        volumes:
-          - mariadb-data:/var/lib/mysql
-        env:
-          MARIADB_ROOT_PASSWORD: "{{ lookup('env', 'PAPERLESS_MARIADB_ROOT_PASSWORD') }}"
-          MARIADB_USER: paperless
-          MARIADB_PASSWORD: "{{ lookup('env', 'PAPERLESS_MARIADB_PASSWORD') }}"
-          MARIADB_DATABASE: paperless
     - name: Redis Container
       community.docker.docker_container:
         name: paperless-broker
         image: docker.io/library/redis:7
         restart_policy: unless-stopped
         pull: true
-        network_mode: paperless-network
+        network_mode: app-db-network
         volumes:
           - redis_data:/data
     - name: Gotenberg Container
@@ -53,7 +48,7 @@
         image: docker.io/gotenberg/gotenberg:7.10
         restart_policy: unless-stopped
         pull: true
-        network_mode: paperless-network
+        network_mode: app-db-network
         command:
           - gotenberg
           - "--chromium-disable-javascript=true"
@@ -64,14 +59,14 @@
         image: ghcr.io/paperless-ngx/tika:latest
         restart_policy: unless-stopped
         pull: true
-        network_mode: paperless-network
+        network_mode: app-db-network
     - name: Paperless Webserver Container
       community.docker.docker_container:
         name: paperless
         image: ghcr.io/paperless-ngx/paperless-ngx:latest
         restart_policy: unless-stopped
         pull: true
-        network_mode: paperless-network
+        network_mode: app-db-network
         published_ports:
           - 8000:8000
         volumes:
@@ -82,7 +77,7 @@
         env:
           PAPERLESS_REDIS: redis://paperless-broker:6379
           PAPERLESS_DBENGINE: mariadb
-          PAPERLESS_DBHOST: paperless-mariadb
+          PAPERLESS_DBHOST: mariadb
           PAPERLESS_DBPASS: "{{ lookup('env', 'PAPERLESS_MARIADB_PASSWORD') }}"
           PAPERLESS_DBPORT: "3306"
           PAPERLESS_SECRET_KEY: "{{ lookup('env', 'PAPERLESS_SECRET_KEY') }}"
