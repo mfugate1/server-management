@@ -25,6 +25,9 @@ squeezebox-livingroom
 squeezebox-workout-room
 zigbee2mqtt
 
+[firefly]
+docker2
+
 [glances]
 docker2
 

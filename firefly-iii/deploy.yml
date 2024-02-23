@@ -1,0 +1,55 @@
+- name: Deploy Firefly III application
+  hosts: firefly
+  tasks:
+    - name: Create firefly database
+      community.mysql.mysql_db:
+        name: firefly
+        state: present
+        login_user: root
+        login_password: "{{ lookup('env', 'MARIADB_ROOT_PASSWORD') }}"
+    - name: Create firefly user
+      community.mysql.mysql_user:
+        name: firefly
+        password: "{{ lookup('env', 'FIREFLY_MARIADB_PASSWORD') }}"
+        priv: "firefly.*:ALL"
+        login_user: root
+        login_password: "{{ lookup('env', 'MARIADB_ROOT_PASSWORD') }}"
+    - name: Create Firefly III container
+      community.docker.docker_container:
+        name: firefly-iii
+        image: fireflyiii/core:latest
+        restart_policy: unless-stopped
+        pull: true
+        network_mode: app-db-network
+        published_ports:
+          - 3848:8080
+        volumes:
+          - firefly-iii-upload:/var/www/html/storage/upload
+        env:
+          ALLOW_WEBHOOKS: "false"
+          APP_ENV: production
+          APP_KEY: "{{ lookup('env', 'FIREFLY_APP_KEY') }}"
+          APP_LOG_LEVEL: notice
+          AUDIT_LOG_LEVEL: emergency
+          DB_CONNECTION: mysql
+          DB_DATABASE: firefly
+          DB_HOST: mariadb
+          DB_PASSWORD: "{{ lookup('env', 'FIREFLY_MARIADB_PASSWORD') }}"
+          DB_PORT: 3306
+          DB_USERNAME: firefly
+          DEFAULT_LANGUAGE: en_US
+          DEFAULT_LOCALE: equal
+          DKR_CHECK_SQLITE: "false"
+          LOG_CHANNEL: stack
+          SITE_OWNER: "{{ lookup('env', 'ADMIN_EMAIL') }}"
+          STATIC_CRON_TOKEN: "{{ lookup('env', 'FIREFLY_STATIC_CRON_TOKEN') }}"
+          TRUSTED_PROXIES: 192.168.1.0/24,172.0.0.0/8
+          TZ: America/New_York
+    - name: Create cron container
+      community.docker.docker_container:
+        name: firefly-iii-cron
+        image: alpine:latest
+        restart_policy: unless-stopped
+        pull: true
+        network_mode: app-db-network
+        command: sh -c "echo \"0 3 * * * wget -qO- http://firefly-iii:8080/api/v1/cron/{{ lookup('env', 'FIREFLY_STATIC_CRON_TOKEN') }}\" | crontab - && crond -f -L /dev/stdout"
