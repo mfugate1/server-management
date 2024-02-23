@@ -1,0 +1,42 @@
+- name: Firefly Backup
+  hosts: firefly
+  tasks:
+    - name: Create backup docker image directory
+      become: true
+      ansible.builtin.file:
+        path: /docker/firefly-backup
+        state: directory
+        owner: jenkins
+        group: jenkins
+    - name: Remove backups older than 30 days
+      ansible.builtin.shell:
+        chdir: /docker/firefly-backup
+        cmd: find . -type f -mtime +30 -delete
+    - name: Backup database
+      ansible.builtin.shell:
+        cmd: >
+          docker run --rm --network app-db-network mariadb:lts mysqldump 
+          -h mariadb 
+          -u firefly 
+          -p{{ lookup('env', 'FIREFLY_MARIADB_PASSWORD') }} 
+          firefly > /docker/firefly-backup/firefly-db-backup-{{ ansible_date_time.date }}.sql
+    - name: Backup upload directory
+      community.docker.docker_container:
+        name: firefly-data-backup
+        image: ubuntu:latest
+        pull: true
+        detach: false
+        auto_remove: true
+        command: cd /upload && tar cvf /backup/firefly-upload-backup-{{ ansible_date_time.date }}.tar.gz .
+        volumes:
+          - /docker/firefly-backup:/backup
+          - firefly-iii-upload:/upload
+    - name: Upload backups to S3
+      community.aws.s3_sync:
+        access_key: "{{ lookup('env', 'AWS_ACCESS_KEY') }}"
+        secret_key: "{{ lookup('env', 'AWS_SECRET_KEY') }}"
+        bucket: overlord-media-backup
+        file_root: /docker/firefly-backup
+        key_prefix: firefly-backups
+        storage_class: DEEP_ARCHIVE
+    
