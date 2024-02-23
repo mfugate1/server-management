@@ -69,6 +69,9 @@ squeezebox-workout-room
 [raspi_squeezelite_hdmi]
 squeezebox-garage
 
+[snipe-it]
+docker2
+
 [ubuntu_docker]
 docker2
 frigate
