@@ -27,7 +27,7 @@
         pull: true
         detach: false
         auto_remove: true
-        command: tar -cvzf /backup/snipe-it-upload-backup-{{ ansible_date_time.date }}.tar.gz --directory /data .
+        command: tar -cvzf /backup/snipe-it-data-backup-{{ ansible_date_time.date }}.tar.gz --directory /data .
         volumes:
           - /docker/snipe-it-backup:/backup
           - snipe-it-data:/data
