@@ -7,6 +7,7 @@
         state: present
         login_user: root
         login_password: "{{ lookup('env', 'MARIADB_ROOT_PASSWORD') }}"
+        config_file: # Prevents default config file from being read
     - name: Create homeassistant user
       community.mysql.mysql_user:
         name: homeassistant
@@ -14,6 +15,7 @@
         priv: "homeassistant.*:ALL"
         login_user: root
         login_password: "{{ lookup('env', 'MARIADB_ROOT_PASSWORD') }}"
+        config_file: # Prevents default config file from being read
     - name: Checkout Home Assistant config repository
       register: config_repo
       ansible.builtin.git:
