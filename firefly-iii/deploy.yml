@@ -35,7 +35,7 @@
           DB_DATABASE: firefly
           DB_HOST: mariadb
           DB_PASSWORD: "{{ lookup('env', 'FIREFLY_MARIADB_PASSWORD') }}"
-          DB_PORT: 3306
+          DB_PORT: "3306"
           DB_USERNAME: firefly
           DEFAULT_LANGUAGE: en_US
           DEFAULT_LOCALE: equal
