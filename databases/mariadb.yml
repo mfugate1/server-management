@@ -1,0 +1,22 @@
+- name: Create MariaDB container
+  hosts: mariadb
+  tasks:
+    - name: Create docker network
+      community.docker.docker_network:
+        name: app-db-network
+    - name: Create docker volumes
+      community.docker.docker_volume:
+        name: mariadb-data
+    - name: MariaDB container
+      community.docker.docker_container:
+        name: mariadb
+        image: mariadb:lts
+        restart_policy: unless-stopped
+        pull: true
+        network_mode: app-db-network
+        published_ports:
+          - 3306:3306
+        volumes:
+          - mariadb-data:/var/lib/mysql
+        env:
+          MARIADB_ROOT_PASSWORD: "{{ lookup('env', 'MARIADB_ROOT_PASSWORD') }}"

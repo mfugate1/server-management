@@ -37,6 +37,10 @@ docker1
 [jenkins]
 docker2
 
+[mariadb]
+docker1
+docker2
+
 [mqtt]
 docker1
 
