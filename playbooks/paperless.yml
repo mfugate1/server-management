@@ -3,13 +3,13 @@
 - name: Paperless-NGX
   hosts: paperless
   tasks:
-    - name: Create homeassistant database
+    - name: Create paperless database
       community.mysql.mysql_db:
         name: paperless
         state: present
         login_user: root
         login_password: "{{ lookup('env', 'MARIADB_ROOT_PASSWORD') }}"
-    - name: Create homeassistant user
+    - name: Create paperless user
       community.mysql.mysql_user:
         name: paperless
         password: "{{ lookup('env', 'PAPERLESS_MARIADB_PASSWORD') }}"
