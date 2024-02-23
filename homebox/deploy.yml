@@ -15,6 +15,6 @@
         volumes:
           - homebox-data:/data
         env:
-          HBOX_ALLOW_REGISTRATION: "false"
+          HBOX_OPTIONS_ALLOW_REGISTRATION: "false"
           HBOX_MODE: production
           TZ: America/New_York
