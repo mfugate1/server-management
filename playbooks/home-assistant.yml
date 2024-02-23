@@ -1,31 +1,19 @@
 - name: Home Assistant
   hosts: homeassistant
   tasks:
-    - name: Install git and docker-py
-      become: true
-      ansible.builtin.apt:
-        update_cache: true
-        name: 
-          - git
-          - python3-docker
-    - name: Create docker volumes
-      community.docker.docker_volume:
-        name: mariadb-data
-    - name: MariaDB container
-      community.docker.docker_container:
-        name: hass-mariadb
-        image: mariadb:lts
-        restart_policy: unless-stopped
-        pull: true
-        published_ports:
-          - 3306:3306
-        volumes:
-          - mariadb-data:/var/lib/mysql
-        env:
-          MARIADB_ROOT_PASSWORD: "{{ lookup('env', 'HASS_MARIADB_ROOT_PASSWORD') }}"
-          MARIADB_USER: homeassistant
-          MARIADB_PASSWORD: "{{ lookup('env', 'HASS_MARIADB_PASSWORD') }}"
-          MARIADB_DATABASE: homeassistant
+    - name: Create homeassistant database
+      community.mysql.mysql_db:
+        name: homeassistant
+        state: present
+        login_user: root
+        login_password: "{{ lookup('env', 'MARIADB_ROOT_PASSWORD') }}"
+    - name: Create homeassistant user
+      community.mysql.mysql_user:
+        name: homeassistant
+        password: "{{ lookup('env', 'HASS_MARIADB_PASSWORD') }}"
+        priv: "homeassistant.*:ALL"
+        login_user: root
+        login_password: "{{ lookup('env', 'MARIADB_ROOT_PASSWORD') }}"
     - name: Checkout Home Assistant config repository
       register: config_repo
       ansible.builtin.git:
