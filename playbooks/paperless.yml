@@ -13,6 +13,7 @@
       community.mysql.mysql_user:
         name: paperless
         password: "{{ lookup('env', 'PAPERLESS_MARIADB_PASSWORD') }}"
+        host: "172.%"
         priv: "paperless.*:ALL"
         login_user: root
         login_password: "{{ lookup('env', 'MARIADB_ROOT_PASSWORD') }}"
