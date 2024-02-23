@@ -1,0 +1,19 @@
+- name: Deploy Homebox application
+  hosts: homebox
+  tasks:
+    - name: Create docker volume
+      community.docker.docker_volume:
+        name: homebox-data
+    - name: Create homebox container
+      community.docker.docker_container:
+        name: homebox
+        image: ghcr.io/hay-kot/homebox:latest
+        restart_policy: unless-stopped
+        pull: true
+        published_ports:
+          - 7745:7745
+        volumes:
+          - homebox-data:/data
+        env:
+          HBOX_MODE: production
+          TZ: America/New_York
