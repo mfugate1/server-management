@@ -27,7 +27,7 @@
         pull: true
         detach: false
         auto_remove: true
-        command: tar cvf /backup/firefly-upload-backup-{{ ansible_date_time.date }}.tar.gz --directory /upload .
+        command: tar -cvzf /backup/firefly-upload-backup-{{ ansible_date_time.date }}.tar.gz --directory /upload .
         volumes:
           - /docker/firefly-backup:/backup
           - firefly-iii-upload:/upload
