@@ -1,12 +1,6 @@
 - name: Ubuntu Docker Server Configuration
-  hosts: "{{ host | default('ubuntu_docker') }}"
+  hosts: ubuntu_docker
   tasks:
-    - name: Update and upgrade packages
-      become: true
-      ansible.builtin.apt:
-        autoremove: true
-        update_cache: true
-        upgrade: true
     - name: Install prerequisites
       become: true
       ansible.builtin.apt:
@@ -47,3 +41,14 @@
         name: jenkins
         groups: docker
         append: true
+    - name: Copy docker logging config
+      register: logging_config
+      become: true
+      ansibile.builtin.copy:
+        src: daemon.json
+        dest: /etc/docker/daemon.json
+    - name: Restart docker
+      become: true
+      when: logging_config.changed
+      ansibile.builtin.shell:
+        cmd: systemctl restart docker
