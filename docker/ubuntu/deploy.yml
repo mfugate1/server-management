@@ -44,11 +44,11 @@
     - name: Copy docker logging config
       register: logging_config
       become: true
-      ansibile.builtin.copy:
+      ansible.builtin.copy:
         src: daemon.json
         dest: /etc/docker/daemon.json
     - name: Restart docker
       become: true
       when: logging_config.changed
-      ansibile.builtin.shell:
+      ansible.builtin.shell:
         cmd: systemctl restart docker
