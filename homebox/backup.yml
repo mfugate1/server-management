@@ -8,10 +8,10 @@
         state: directory
         owner: jenkins
         group: jenkins
-    - name: Remove backups older than 30 days
+    - name: Remove backups older than 3 days
       ansible.builtin.shell:
         chdir: /docker/homebox-backup
-        cmd: find . -type f -mtime +30 -delete
+        cmd: find . -type f -mtime +3 -delete
     - name: Backup data directory
       community.docker.docker_container:
         name: homebox-data-backup
@@ -31,4 +31,4 @@
         file_root: /docker/homebox-backup
         key_prefix: homebox-backups
         storage_class: DEEP_ARCHIVE
-    
+        delete: true

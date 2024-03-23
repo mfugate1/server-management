@@ -8,10 +8,10 @@
         state: directory
         owner: jenkins
         group: jenkins
-    - name: Remove backups older than 30 days
+    - name: Remove backups older than 3 days
       ansible.builtin.shell:
         chdir: /docker/paperless-backup
-        cmd: find . -type f -mtime +30 -delete
+        cmd: find . -type f -mtime +3 -delete
     - name: Backup database
       ansible.builtin.shell:
         cmd: >
@@ -32,4 +32,4 @@
         file_root: /docker/paperless-backup
         key_prefix: paperless-backups
         storage_class: DEEP_ARCHIVE
-    
+        delete: true
