@@ -32,6 +32,7 @@ docker2
 
 [glances]
 docker2
+zwavejs
 
 [grocy]
 docker2
