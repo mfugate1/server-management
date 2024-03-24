@@ -1,0 +1,34 @@
+- name: Zwavejs Backup
+  hosts: zwavejs
+  tasks:
+    - name: Create backup docker image directory
+      become: true
+      ansible.builtin.file:
+        path: /docker/zwavejs-backup
+        state: directory
+        owner: jenkins
+        group: jenkins
+    - name: Remove backups older than 3 days
+      ansible.builtin.shell:
+        chdir: /docker/zwavejs-backup
+        cmd: find . -type f -mtime +3 -delete
+    - name: Backup data directory
+      community.docker.docker_container:
+        name: zwavejs-data-backup
+        image: ubuntu:latest
+        pull: true
+        detach: false
+        auto_remove: true
+        command: tar -cvzf /backup/zwavejs-data-backup-{{ ansible_date_time.date }}.tar.gz --directory /data .
+        volumes:
+          - /docker/zwavejs-backup:/backup
+          - zwavejs-data:/data
+    - name: Upload backups to S3
+      community.aws.s3_sync:
+        access_key: "{{ lookup('env', 'AWS_ACCESS_KEY') }}"
+        secret_key: "{{ lookup('env', 'AWS_SECRET_KEY') }}"
+        bucket: overlord-media-backup
+        file_root: /docker/zwavejs-backup
+        key_prefix: zwavejs-backups
+        storage_class: DEEP_ARCHIVE
+        delete: true

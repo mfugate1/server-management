@@ -1,13 +1,9 @@
 - name: ZwaveJS Server
   hosts: zwavejs
   tasks:
-    - name: Create ZwaveJS config directory
-      become: true
-      ansible.builtin.file:
-        path: /docker/zwavejs
-        state: directory
-        owner: jenkins
-        group: jenkins
+    - name: Create docker volume
+      community.docker.docker_volume:
+        name: zwavejs-data
     - name: ZwaveJS Container
       community.docker.docker_container:
         name: zwavejs
@@ -20,4 +16,4 @@
           - 3000:3000
           - 8091:8091
         volumes:
-          - /docker/zwavejs:/usr/src/app/store
+          - zwavejs-data:/usr/src/app/store
