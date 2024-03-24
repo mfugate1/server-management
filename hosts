@@ -15,6 +15,7 @@ squeezebox-garage
 squeezebox-livingroom
 squeezebox-workout-room
 zigbee2mqtt
+zwavejs
 
 [docker]
 docker1
@@ -24,6 +25,7 @@ squeezebox-garage
 squeezebox-livingroom
 squeezebox-workout-room
 zigbee2mqtt
+zwavejs
 
 [firefly]
 docker2
@@ -67,6 +69,7 @@ squeezebox-workout-room
 squeezebox-garage
 squeezebox-livingroom
 zigbee2mqtt
+zwavejs
 
 [raspi_squeezelite_dac]
 squeezebox-livingroom 
