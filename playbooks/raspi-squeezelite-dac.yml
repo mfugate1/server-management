@@ -32,7 +32,7 @@
         restart_policy: unless-stopped
         privileged: true
         env:
-          SERVER: 192.168.1.86
+          SERVER: 192.168.1.32
           CLIENTNAME: "{{ inventory_hostname | split('-') | first }}"
           SOUNDDEVICE: default:CARD=sndrpihifiberry
           CLIENTMAC: "{{ CLIENTMAC }}"
