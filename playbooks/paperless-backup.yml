@@ -11,7 +11,7 @@
     - name: Remove backups older than 3 days
       ansible.builtin.shell:
         chdir: /docker/paperless-backup
-        cmd: find . -type f -mtime +3 -delete
+        cmd: find . -type f -mtime +2 -delete
     - name: Backup database
       ansible.builtin.shell:
         cmd: >
