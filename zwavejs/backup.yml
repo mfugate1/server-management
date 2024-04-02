@@ -18,7 +18,7 @@
         image: ubuntu:latest
         pull: true
         detach: false
-        # auto_remove: true
+        auto_remove: true
         command: tar -cvzf /backup/zwavejs-data-backup-{{ ansible_date_time.date }}.tar.gz --directory /data .
         volumes:
           - /docker/zwavejs-backup:/backup
