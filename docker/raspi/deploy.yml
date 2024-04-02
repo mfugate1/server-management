@@ -31,8 +31,13 @@
       when: not checkcmdline.found
       ansible.builtin.shell: 
         cmd: echo " cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory" >> /boot/cmdline.txt
+    - name: Check for dhcpcd.conf
+      register: dhcpcd_check
+      ansible.builtin.stat:
+        path: /etc/dhcpcd.conf
     - name: Deny veth interfaces in dhcpcd.conf
       become: true
+      when: dhcpcd_check.stat.exists
       register: dhcpcd
       ansible.builtin.lineinfile:
         dest: /etc/dhcpcd.conf
