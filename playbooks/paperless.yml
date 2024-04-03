@@ -94,7 +94,7 @@
         name: paperless
         group: paperless
         groups: jenkins
-        password: "{{ lookup('env', 'PAPERLESS_MARIADB_PASSWORD') | password_hash('sha512', lookup('env', 'PAPERLESS_SECRET_KEY')) }}"
+        password: "{{ lookup('env', 'PAPERLESS_MARIADB_PASSWORD') | password_hash }}"
         home: /docker/paperless/consume
     - name: Install FTP server
       ansible.builtin.apt:
