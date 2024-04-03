@@ -92,7 +92,6 @@
       become: true
       ansible.builtin.user:
         name: paperless
-        group: paperless
         groups: jenkins
         password: "{{ lookup('env', 'PAPERLESS_MARIADB_PASSWORD') | password_hash }}"
         home: /docker/paperless/consume
