@@ -93,7 +93,7 @@
       ansible.builtin.apt:
         update_cache: true
         name: 
-          - python-passlib
+          - python3-passlib
           - vsftpd
     - name: Create paperless FTP user
       become: true
