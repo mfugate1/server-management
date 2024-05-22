@@ -9,6 +9,6 @@
         privileged: true
         env:
           SERVER: 192.168.1.32
-          CLIENTNAME: "{{ inventory_hostname | split('-') | first }}"
+          CLIENTNAME: "{{ inventory_hostname }}"
           SOUNDDEVICE: iec958:CARD=vc4hdmi0,DEV=0
           CLIENTMAC: "{{ CLIENTMAC }}"
