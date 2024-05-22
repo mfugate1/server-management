@@ -14,6 +14,7 @@ docker2
 frigate
 squeezebox-garage
 squeezebox-livingroom
+squeezebox-office
 squeezebox-workout-room
 zigbee2mqtt
 zwavejs
@@ -24,6 +25,7 @@ docker2
 frigate
 squeezebox-garage
 squeezebox-livingroom
+squeezebox-office
 squeezebox-workout-room
 zigbee2mqtt
 zwavejs
@@ -70,6 +72,7 @@ docker1
 squeezebox-workout-room
 squeezebox-garage
 squeezebox-livingroom
+squeezebox-office
 zigbee2mqtt
 zwavejs
 
