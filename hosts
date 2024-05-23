@@ -77,11 +77,11 @@ zigbee2mqtt
 zwavejs
 
 [raspi_squeezelite_dac]
-squeezebox-livingroom 
 squeezebox-workout-room 
 
 [raspi_squeezelite_hdmi]
 squeezebox-garage
+squeezebox-livingroom
 squeezebox-office
 
 [ubuntu_docker]
