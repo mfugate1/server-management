@@ -2,8 +2,8 @@ docker1 ansible_host=192.168.1.86
 docker2 ansible_host=192.168.1.17
 frigate ansible_host=192.168.1.169
 squeezebox-garage ansible_host=192.168.1.107 CLIENTMAC=33:44:55:66:77:88
-squeezebox-livingroom ansible_host=192.168.1.130 CLIENTMAC=11:22:33:44:55:66 DTOVERLAY=hifiberry-dac
-squeezebox-office ansible_host=192.168.1.78 CLIENTMAC=44:55:66:77:88:99
+squeezebox-office ansible_host=192.168.1.130 CLIENTMAC=11:22:33:44:55:66 DTOVERLAY=hifiberry-dac
+squeezebox-livingroom ansible_host=192.168.1.78 CLIENTMAC=44:55:66:77:88:99
 squeezebox-workout-room ansible_host=192.168.1.77 CLIENTMAC=22:33:44:55:66:77 DTOVERLAY=hifiberry-dac
 zigbee2mqtt ansible_host=192.168.1.68
 zwavejs ansible_host=192.168.1.164
@@ -77,12 +77,12 @@ zigbee2mqtt
 zwavejs
 
 [raspi_squeezelite_dac]
-squeezebox-workout-room 
+squeezebox-workout-room
+squeezebox-office
 
 [raspi_squeezelite_hdmi]
 squeezebox-garage
 squeezebox-livingroom
-squeezebox-office
 
 [ubuntu_docker]
 docker1
