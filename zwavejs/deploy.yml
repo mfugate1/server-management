@@ -12,6 +12,8 @@
         pull: true
         devices:
           - /dev/ttyACM0:/dev/ttyACM0
+        env:
+          TZ: America/New_York
         published_ports:
           - 3000:3000
           - 8091:8091
