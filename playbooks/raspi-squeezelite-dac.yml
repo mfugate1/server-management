@@ -30,7 +30,6 @@
         name: squeezelite
         image: giof71/squeezelite:latest
         restart_policy: unless-stopped
-        privileged: true
         devices:
           - /dev/snd
         env:
