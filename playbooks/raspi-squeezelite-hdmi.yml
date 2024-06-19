@@ -9,7 +9,7 @@
         devices:
           - /dev/snd
         env:
-          SQUEEZELITE_SERVER_PORT: 192.168.1.17
+          SQUEEZELITE_SERVER_PORT: 192.168.1.32
           SQUEEZELITE_NAME: "{{ inventory_hostname }}"
           SQUEEZELITE_MAC_ADDRESS: "{{ CLIENTMAC }}"
           SQUEEZELITE_AUDIO_DEVICE: "default:CARD=vc4hdmi0"
