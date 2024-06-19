@@ -37,4 +37,5 @@
           SQUEEZELITE_NAME: "{{ inventory_hostname }}"
           SQUEEZELITE_AUDIO_DEVICE: default:CARD=sndrpihifiberry
           SQUEEZELITE_MAC_ADDRESS: "{{ CLIENTMAC }}"
+          SQUEEZELITE_TIMEOUT: "900"
           DISABLE_MAC_ADDRESS_GENERATION: "yes"

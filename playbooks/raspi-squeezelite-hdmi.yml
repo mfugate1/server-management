@@ -13,4 +13,5 @@
           SQUEEZELITE_NAME: "{{ inventory_hostname }}"
           SQUEEZELITE_MAC_ADDRESS: "{{ CLIENTMAC }}"
           SQUEEZELITE_AUDIO_DEVICE: "default:CARD=vc4hdmi0"
+          SQUEEZELITE_TIMEOUT: "900"
           DISABLE_MAC_ADDRESS_GENERATION: "yes"
