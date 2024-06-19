@@ -12,6 +12,6 @@
         env:
           SQUEEZELITE_SERVER_PORT: 192.168.1.32
           SQUEEZELITE_NAME: "{{ inventory_hostname }}"
-          SQUEEZELITE_AUDIO_DEVICE: default:CARD=sndrpihifiberry
+          SQUEEZELITE_AUDIO_DEVICE: iec958:CARD=vc4hdmi0,DEV=0
           SQUEEZELITE_MAC_ADDRESS: "{{ CLIENTMAC }}"
           DISABLE_MAC_ADDRESS_GENERATION: "yes"
