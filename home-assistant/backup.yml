@@ -1,0 +1,27 @@
+- name: Home Assistant Backup
+  hosts: homeassistant
+  tasks:
+    - name: Create backup docker image directory
+      become: true
+      ansible.builtin.file:
+        path: /docker/home-assistant-backup
+        state: directory
+        owner: jenkins
+        group: jenkins
+    - name: Remove backups older than 3 days
+      ansible.builtin.shell:
+        chdir: /docker/home-assistant-backup
+        cmd: find . -type f -mtime +2 -delete
+    - name: Backup config directory
+      ansible.builtin.shell:
+        chdir: /docker/home-assistant
+        cmd: tar -cvzf /docker/home-assistant-backup/home-assistant-backup-{{ ansible_date_time.date }}.tar.gz .
+    - name: Upload backups to S3
+      community.aws.s3_sync:
+        access_key: "{{ lookup('env', 'AWS_ACCESS_KEY') }}"
+        secret_key: "{{ lookup('env', 'AWS_SECRET_KEY') }}"
+        bucket: overlord-media-backup
+        file_root: /docker/home-assistant-backup
+        key_prefix: home-assistant-backups
+        storage_class: DEEP_ARCHIVE
+        delete: true
