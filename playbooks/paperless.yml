@@ -46,7 +46,7 @@
     - name: Gotenberg Container
       community.docker.docker_container:
         name: gotenberg
-        image: docker.io/gotenberg/gotenberg:7.10
+        image: docker.io/gotenberg/gotenberg:8
         restart_policy: unless-stopped
         pull: true
         network_mode: app-db-network
