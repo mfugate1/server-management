@@ -13,9 +13,16 @@
         chdir: /docker/home-assistant-backup
         cmd: find . -type f -mtime +2 -delete
     - name: Backup config directory
+      become: true
       ansible.builtin.shell:
         chdir: /docker/home-assistant
         cmd: tar -cvzf /docker/home-assistant-backup/home-assistant-backup-{{ ansible_date_time.date }}.tar.gz .
+    - name: Correct backup file owner
+      become: true
+      ansible.builtin.file:
+        path: /docker/home-assistant-backup/home-assistant-backup-{{ ansible_date_time.date }}.tar.gz
+        owner: jenkins
+        group: jenkins
     - name: Upload backups to S3
       community.aws.s3_sync:
         access_key: "{{ lookup('env', 'AWS_ACCESS_KEY') }}"
