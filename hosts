@@ -60,6 +60,9 @@ docker1
 zigbee2mqtt
 zwavejs
 
+[redis]
+docker2
+
 [ubuntu_docker]
 docker1
 docker2
