@@ -34,6 +34,9 @@ docker1
 [homebox]
 docker2
 
+[immich]
+docker2
+
 [jenkins]
 docker2
 
