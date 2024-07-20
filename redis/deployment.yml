@@ -1,0 +1,15 @@
+- name: Redis
+  hosts: redis
+  tasks:
+    - name: Create docker volumes
+      community.docker.docker_volume:
+        name: redis_data
+    - name: Redis Container
+      community.docker.docker_container:
+        name: redis
+        image: docker.io/library/redis:7
+        restart_policy: unless-stopped
+        pull: true
+        network_mode: app-db-network
+        volumes:
+          - redis_data:/data

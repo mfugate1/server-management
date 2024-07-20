@@ -19,10 +19,7 @@
         login_password: "{{ lookup('env', 'MARIADB_ROOT_PASSWORD') }}"
     - name: Create docker volumes
       community.docker.docker_volume:
-        name: "{{ item }}"
-      loop:
-        - redis_data
-        - paperless_data
+        name: paperless_data
     - name: Create docker directories
       become: true
       ansible.builtin.file:
@@ -34,15 +31,6 @@
         - /docker/paperless/media
         - /docker/paperless/export
         - /docker/paperless/consume
-    - name: Redis Container
-      community.docker.docker_container:
-        name: paperless-broker
-        image: docker.io/library/redis:7
-        restart_policy: unless-stopped
-        pull: true
-        network_mode: app-db-network
-        volumes:
-          - redis_data:/data
     - name: Gotenberg Container
       community.docker.docker_container:
         name: gotenberg
@@ -76,7 +64,7 @@
           - /docker/paperless/export:/usr/src/paperless/export
           - /docker/paperless/consume:/usr/src/paperless/consume
         env:
-          PAPERLESS_REDIS: redis://paperless-broker:6379
+          PAPERLESS_REDIS: redis://redis:6379
           PAPERLESS_CONSUMER_POLLING: "60"
           PAPERLESS_DBENGINE: mariadb
           PAPERLESS_DBHOST: mariadb
