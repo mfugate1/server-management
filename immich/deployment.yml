@@ -3,6 +3,7 @@
   tasks:
     - name: Create docker volumes
       community.docker.docker_volume:
+        name: "{{ item }}"
       loop:
         - immich_postgres_data
         - immich_model_cache
