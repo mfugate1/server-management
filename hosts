@@ -53,6 +53,9 @@ docker2
 [photoprism]
 docker2
 
+[postgres]
+docker2
+
 [ps5mqtt]
 docker1
 

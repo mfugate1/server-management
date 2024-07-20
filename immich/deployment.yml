@@ -1,0 +1,72 @@
+- name: Immich Deployment
+  hosts: immich
+  tasks:
+    - name: Create docker volumes
+      community.docker.docker_volume:
+      loop:
+        - immich_postgres_data
+        - immich_model_cache
+    - name: Create docker directories
+      become: true
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: jenkins
+        group: jenkins
+      loop:
+        - /docker/immich/upload
+    - name: Postgres container
+      community.docker.docker_container:
+        name: immich_postgres
+        image: tensorchord/pgvecto-rs:pg14-v0.2.0
+        restart_policy: unless-stopped
+        pull: true
+        network_mode: app-db-network
+        command:
+          - postgres
+          - "-c"
+          - shared_preload_libraries=vectors.so
+          - "-c"
+          - 'search_path="$$user", public, vectors'
+          - "-c"
+          - logging_collector=on
+          - "-c"
+          - max_wal_size=2GB
+          - "-c"
+          - shared_buffers=512MB
+          - "-c"
+          - wal_compression=on
+        volumes:
+          immich_postgres_data:/var/lib/postgresql/data
+        env:
+          POSTGRES_USER: immich
+          POSTGRES_PASSWORD: "{{ lookup('env', 'IMMICH_POSTGRES_PASSWORD') }}"
+          POSTGRES_DB: immich
+          POSTGRES_INITDB_ARGS: "--data-checksums"
+    - name: Immich machine learning container
+      community.docker.docker_container:
+        name: immich-machine-learning
+        image: ghcr.io/immich-app/immich-machine-learning:release
+        restart_policy: unless-stopped
+        pull: true
+        network_mode: app-db-network
+        volumes:
+          - immich_model_cache:/cache
+    - name: Immich container
+      community.docker.docker_container:
+        name: immich
+        image: ghcr.io/immich-app/immich-server:release
+        restart_policy: unless-stopped
+        pull: true
+        network_mode: app-db-network
+        published_ports:
+          - 2283:3001
+        volumes:
+          - /etc/localtime:/etc/localtime:ro
+          - /docker/immich/upload:/usr/src/app/upload
+        env:
+          DB_HOSTNAME: immich_postgres 
+          DB_USERNAME: immich
+          DB_PASSWORD: "{{ lookup('env', 'IMMICH_POSTGRES_PASSWORD') }}"
+          DB_DATABASE_NAME: immich
+          TZ: America/New_York
