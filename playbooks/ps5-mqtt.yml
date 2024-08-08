@@ -5,6 +5,9 @@
         psn_accounts:
           - username: "{{ lookup('env', 'PSN_USER') }}"
             npsso: "{{ lookup('env', 'PSN_NPSSO') }}"
+    - name: Create docker volume
+      community.docker.docker_volume:
+        name: ps5mqtt_data
     - name: PS5-MQTT Container
       community.docker.docker_container:
         name: ps5mqtt
@@ -13,6 +16,8 @@
         restart_policy: unless-stopped
         network_mode: host
         entrypoint: /app/run-standalone.sh
+        volumes:
+          - ps5mqtt_data:/config
         env:
           ACCOUNT_CHECK_INTERVAL: "5000"
           CREDENTIAL_STORAGE_PATH: /config/credentials.json
