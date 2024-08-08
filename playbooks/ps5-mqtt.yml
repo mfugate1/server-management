@@ -5,6 +5,7 @@
         psn_accounts:
           - username: "{{ lookup('env', 'PSN_USER') }}"
             npsso: "{{ lookup('env', 'PSN_NPSSO') }}"
+            preferred_ps5: 78C8818DF671
     - name: Create docker volume
       community.docker.docker_volume:
         name: ps5mqtt_data
