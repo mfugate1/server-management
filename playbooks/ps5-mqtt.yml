@@ -5,17 +5,6 @@
         psn_accounts:
           - username: "{{ lookup('env', 'PSN_USER') }}"
             npsso: "{{ lookup('env', 'PSN_NPSSO') }}"
-    - name: Create ps5mqtt config directory
-      ansible.builtin.file:
-        path: /docker/ps5mqtt
-        state: directory
-        owner: jenkins
-        group: jenkins
-    - name: Create run.sh
-      ansible.builtin.copy:
-        src: files/ps5mqtt/run.sh
-        dest: /docker/ps5mqtt/run.sh
-        mode: "0777"
     - name: PS5-MQTT Container
       community.docker.docker_container:
         name: ps5mqtt
@@ -23,7 +12,7 @@
         pull: true
         restart_policy: unless-stopped
         network_mode: host
-        entrypoint: /config/run.sh
+        entrypoint: /app/run-standalone.sh
         env:
           ACCOUNT_CHECK_INTERVAL: "5000"
           CREDENTIAL_STORAGE_PATH: /config/credentials.json
@@ -38,5 +27,3 @@
           # This method results in valid json with double quotes instead. 
           # Otherwise, ps5-mqtt will throw a parsing error.
           PSN_ACCOUNTS: "{{ psn_accounts | to_json | tojson }}" 
-        volumes:
-          - /docker/ps5mqtt:/config
