@@ -28,7 +28,6 @@
           INCLUDE_PS4_DEVICES: "false"
           MQTT_HOST: "127.0.0.1"
           MQTT_PORT: "1883"
-          DEBUG: "@ha:ps5:*"
 
           # Using | string gives a result with single quotes.
           # This method results in valid json with double quotes instead. 
