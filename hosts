@@ -29,7 +29,7 @@ zwavejs
 docker2
 
 [homeassistant]
-docker1
+docker2
 
 [homebox]
 docker2
