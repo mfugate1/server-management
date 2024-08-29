@@ -11,6 +11,7 @@
       community.mysql.mysql_user:
         name: homeassistant
         password: "{{ lookup('env', 'HASS_MARIADB_PASSWORD') }}"
+        host: "172.%"
         priv: "homeassistant.*:ALL"
         login_user: root
         login_password: "{{ lookup('env', 'MARIADB_ROOT_PASSWORD') }}"
