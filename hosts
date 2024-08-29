@@ -60,7 +60,7 @@ docker2
 docker2
 
 [ps5mqtt]
-docker1
+docker2
 
 [raspi]
 zigbee2mqtt
