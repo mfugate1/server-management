@@ -12,6 +12,10 @@
       ansible.builtin.shell:
         chdir: /docker/unifi-backup
         cmd: find . -type f -mtime +2 -delete
+    - name: Stop unifi container
+      community.docker.docker_container:
+        name: unifi
+        state: stopped
     - name: Backup config directory
       community.docker.docker_container:
         name: unifi-backup
@@ -23,6 +27,10 @@
         volumes:
           - /docker/unifi-backup:/backup
           - unifi-data:/data
+    - name: Start unifi container
+      community.docker.docker_container:
+        name: unifi
+        state: started
     - name: Upload backups to S3
       community.aws.s3_sync:
         access_key: "{{ lookup('env', 'AWS_ACCESS_KEY') }}"
