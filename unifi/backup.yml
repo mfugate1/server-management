@@ -1,0 +1,34 @@
+- name: Unifi Backup
+  hosts: unifi
+  tasks:
+    - name: Create backup docker image directory
+      become: true
+      ansible.builtin.file:
+        path: /docker/unifi-backup
+        state: directory
+        owner: jenkins
+        group: jenkins
+    - name: Remove backups older than 3 days
+      ansible.builtin.shell:
+        chdir: /docker/unifi-backup
+        cmd: find . -type f -mtime +2 -delete
+    - name: Backup config directory
+      community.docker.docker_container:
+        name: unifi-backup
+        image: ubuntu:latest
+        pull: true
+        detach: false
+        auto_remove: true
+        command: tar -cvzf /backup/unifi-config-backup-{{ ansible_date_time.date }}.tar.gz --directory /data .
+        volumes:
+          - /docker/unifi-backup:/backup
+          - unifi-data:/data
+    - name: Upload backups to S3
+      community.aws.s3_sync:
+        access_key: "{{ lookup('env', 'AWS_ACCESS_KEY') }}"
+        secret_key: "{{ lookup('env', 'AWS_SECRET_KEY') }}"
+        bucket: overlord-media-backup
+        file_root: /docker/unifi-backup
+        key_prefix: unifi-backups
+        storage_class: DEEP_ARCHIVE
+        delete: true
