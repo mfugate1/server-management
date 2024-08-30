@@ -1,0 +1,35 @@
+- name: Nginx Proxy Manager Backup
+  hosts: nginxproxymanager
+  tasks:
+    - name: Create backup docker image directory
+      become: true
+      ansible.builtin.file:
+        path: /docker/nginx-proxy-manager-backup
+        state: directory
+        owner: jenkins
+        group: jenkins
+    - name: Remove backups older than 3 days
+      ansible.builtin.shell:
+        chdir: /docker/nginx-proxy-manager-backup
+        cmd: find . -type f -mtime +2 -delete
+    - name: Backup upload directory
+      community.docker.docker_container:
+        name: nginx-proxy-manager-data-backup
+        image: ubuntu:latest
+        pull: true
+        detach: false
+        auto_remove: true
+        command: tar -cvzf /backup/nginx-proxy-manager-upload-backup-{{ ansible_date_time.date }}.tar.gz --directory /npm-config .
+        volumes:
+          - /docker/nginx-proxy-manager-backup:/backup
+          - nginx-proxy-manager-data:/npm-config/data
+          - nginx-proxy-manager-letsencrypt:/npm-config/letsencrypt
+    - name: Upload backups to S3
+      community.aws.s3_sync:
+        access_key: "{{ lookup('env', 'AWS_ACCESS_KEY') }}"
+        secret_key: "{{ lookup('env', 'AWS_SECRET_KEY') }}"
+        bucket: overlord-media-backup
+        file_root: /docker/nginx-proxy-manager-backup
+        key_prefix: nginx-proxy-manager-backups
+        storage_class: DEEP_ARCHIVE
+        delete: true
