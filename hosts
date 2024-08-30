@@ -48,7 +48,7 @@ docker2
 docker1
 
 [nginxproxymanager]
-docker1
+docker2
 
 [paperless]
 docker2
