@@ -1,18 +1,15 @@
-docker1 ansible_host=192.168.1.86
 docker2 ansible_host=192.168.1.17
 frigate ansible_host=192.168.1.169
 zigbee2mqtt ansible_host=192.168.1.68
 zwavejs ansible_host=192.168.1.164
 
 [apt]
-docker1
 docker2
 frigate
 zigbee2mqtt
 zwavejs
 
 [docker]
-docker1
 docker2
 frigate
 zigbee2mqtt
@@ -41,7 +38,6 @@ docker2
 docker2
 
 [mariadb]
-docker1
 docker2
 
 [mqtt]
@@ -70,7 +66,6 @@ zwavejs
 docker2
 
 [ubuntu_docker]
-docker1
 docker2
 frigate
 
