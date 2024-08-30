@@ -45,7 +45,7 @@ docker1
 docker2
 
 [mqtt]
-docker1
+docker2
 
 [nginxproxymanager]
 docker2

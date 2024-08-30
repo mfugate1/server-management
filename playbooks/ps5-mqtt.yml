@@ -26,7 +26,7 @@
           DEVICE_DISCOVERY_INTERVAL: "60000"
           FRONTEND_PORT: "8645"
           INCLUDE_PS4_DEVICES: "false"
-          MQTT_HOST: "192.168.1.86"
+          MQTT_HOST: "192.168.1.17"
           MQTT_PORT: "1883"
 
           # Using | string gives a result with single quotes.

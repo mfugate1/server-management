@@ -1,7 +1,7 @@
 homeassistant: true
 mqtt:
   base_topic: zigbee2mqtt
-  server: mqtt://192.168.1.86:1883
+  server: mqtt://192.168.1.17:1883
 serial:
   port: /dev/ttyUSB0
 frontend:
