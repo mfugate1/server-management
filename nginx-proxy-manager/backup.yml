@@ -19,7 +19,7 @@
         pull: true
         detach: false
         auto_remove: true
-        command: tar -cvzf /backup/nginx-proxy-manager-upload-backup-{{ ansible_date_time.date }}.tar.gz --directory /npm-config .
+        command: tar -cvzf /backup/nginx-proxy-manager-config-backup-{{ ansible_date_time.date }}.tar.gz --directory /npm-config .
         volumes:
           - /docker/nginx-proxy-manager-backup:/backup
           - nginx-proxy-manager-data:/npm-config/data
