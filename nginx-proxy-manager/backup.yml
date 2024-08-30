@@ -12,7 +12,7 @@
       ansible.builtin.shell:
         chdir: /docker/nginx-proxy-manager-backup
         cmd: find . -type f -mtime +2 -delete
-    - name: Backup upload directory
+    - name: Backup config directories
       community.docker.docker_container:
         name: nginx-proxy-manager-data-backup
         image: ubuntu:latest
