@@ -12,7 +12,7 @@
         name: homeassistant
         password: "{{ lookup('env', 'HASS_MARIADB_PASSWORD') }}"
         host: "172.%"
-        priv: "homeassistant.*:ALL"
+        priv: "homeassistant.*:ALL/hall_of_holes.*:ALL"
         login_user: root
         login_password: "{{ lookup('env', 'MARIADB_ROOT_PASSWORD') }}"
     - name: Checkout Home Assistant config repository
