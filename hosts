@@ -18,6 +18,9 @@ zwavejs
 [firefly]
 docker2
 
+[ftp]
+docker2
+
 [glances]
 docker2
 zwavejs
