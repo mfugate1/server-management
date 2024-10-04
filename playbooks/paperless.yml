@@ -77,28 +77,3 @@
           PAPERLESS_TRUSTED_PROXIES: 192.168.1.0/24,172.0.0.0/8
           PAPERLESS_URL: "{{ lookup('env', 'PAPERLESS_URL') }}"
           PAPERLESS_USE_X_FORWARD_HOST: "true"
-    - name: Install FTP server and passlib library
-      become: true
-      ansible.builtin.apt:
-        update_cache: true
-        name: 
-          - python3-passlib
-          - vsftpd
-    - name: Create paperless FTP user
-      become: true
-      ansible.builtin.user:
-        name: paperless
-        groups: jenkins
-        password: "{{ lookup('env', 'PAPERLESS_MARIADB_PASSWORD') | password_hash }}"
-        home: /docker/paperless/consume
-    - name: Enable FTP write
-      become: true
-      register: enable_ftp_write
-      ansible.builtin.lineinfile:
-        dest: /etc/vsftpd.conf
-        line: write_enable=YES
-    - name: Restart FTP service
-      become: true
-      when: enable_ftp_write.changed
-      ansible.builtin.shell:
-        cmd: systemctl restart vsftpd.service
