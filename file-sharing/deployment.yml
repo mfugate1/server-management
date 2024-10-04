@@ -21,7 +21,7 @@
       become: true
       register: add_samba_share_config
       ansible.builtin.blockinfile:
-        path: /etc/sambda/smb.conf
+        path: /etc/samba/smb.conf
         prepend_newline: true
         block: |
           [scans]
