@@ -35,7 +35,7 @@
              force group = jenkins
 
           [paperless]
-             path = /home/jenkins/paperless
+             path = /docker/paperless/consume
              read only = no
              browsable = yes
              guest ok = yes
