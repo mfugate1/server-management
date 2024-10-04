@@ -1,38 +1,50 @@
-- name: FTP Setup
-  hosts: ftp
+- name: File Shares
+  hosts: fileshare
   tasks:
-    - name: Install FTP server and passlib library
+    - name: Install samba
       become: true
       ansible.builtin.apt:
         update_cache: true
         name: 
-          - python3-passlib
-          - vsftpd
-    - name: Create paperless FTP user
-      become: true
-      ansible.builtin.user:
-        name: ftpuser
-        groups: jenkins
-        password: "{{ lookup('env', 'FTP_USER_PASSWORD') | password_hash }}"
-        home: /docker/ftpuser
-    - name: Create ftp directories
+          - samba
+    - name: Create shared directories
       become: true
       ansible.builtin.file:
-        path: "/docker/ftpuser/{{ item }}"
+        path: "/home/jenkins/{{ item }}"
         state: directory
-        owner: ftpuser
+        owner: jenkins
         group: jenkins
       loop:
         - paperless
-        - receipts
-    - name: Enable FTP write
+        - scans
+    - name: Enable samba share
       become: true
-      register: enable_ftp_write
-      ansible.builtin.lineinfile:
-        dest: /etc/vsftpd.conf
-        line: write_enable=YES
-    - name: Restart FTP service
+      register: add_samba_share_config
+      ansible.builtin.blockinfile:
+        path: /etc/sambda/smb.conf
+        prepend_newline: true
+        block: |
+          [scans]
+             path = /home/jenkins/scans
+             read only = no
+             browsable = yes
+             guest ok = yes
+             create mask = 666
+             directory mask = 777
+             force user = jenkins
+             force group = jenkins
+
+          [paperless]
+             path = /home/jenkins/paperless
+             read only = no
+             browsable = yes
+             guest ok = yes
+             create mask = 666
+             directory mask = 777
+             force user = jenkins
+             force group = jenkins
+    - name: Restart Samba Service
       become: true
-      when: enable_ftp_write.changed
+      when: add_samba_share_config.changed
       ansible.builtin.shell:
-        cmd: systemctl restart vsftpd.service
+        cmd: systemctl restart smbd.service
