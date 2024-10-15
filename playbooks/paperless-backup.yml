@@ -15,7 +15,7 @@
     - name: Backup database
       ansible.builtin.shell:
         cmd: >
-          docker run --rm --network app-db-network mariadb:lts mysqldump 
+          docker run --rm --network app-db-network mariadb:lts mariadb-dump 
           -h mariadb 
           -u paperless 
           -p{{ lookup('env', 'PAPERLESS_MARIADB_PASSWORD') }} 
