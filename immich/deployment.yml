@@ -61,7 +61,7 @@
         pull: true
         network_mode: app-db-network
         published_ports:
-          - 2283:3001
+          - 2283:2283
         volumes:
           - /etc/localtime:/etc/localtime:ro
           - /docker/immich/upload:/usr/src/app/upload
