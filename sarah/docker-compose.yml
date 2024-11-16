@@ -3,7 +3,6 @@ services:
   home-assistant:
     depends_on:
       - zwavejs
-      - matter-server
     container_name: home-assistant
     restart: unless-stopped
     image: ghcr.io/home-assistant/home-assistant:stable
