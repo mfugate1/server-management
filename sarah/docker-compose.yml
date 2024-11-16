@@ -12,6 +12,16 @@ services:
       - /etc/localtime:/etc/localtime:ro
     network_mode: host
     privileged: true
+  mqtt:
+    container_name: mqtt
+    restart: unless-stopped
+    image: eclipse-mosquitto:latest
+    ports:
+      - 1883:1883
+      - 9001:9001
+    volumes:
+      - mqtt-data:/var/lib/mysql
+      - /home/jenkins/server-management/sarah/mosquitto.conf:/mosquitto/config/mosquitto.conf
   nginx-proxy-manager:
     container_name: nginx-proxy-manager
     restart: unless-stopped
@@ -23,6 +33,33 @@ services:
     volumes:
       - nginx-data:/data
       - letsencrypt:/etc/letsencrypt
+  ps5-mqtt:
+    container_name: ps5-mqtt
+    restart: unless-stopped
+    image: ghcr.io/funkeyflo/ps5-mqtt/amd64:latest
+    network_mode: host
+    environment:
+      ACCOUNT_CHECK_INTERVAL: "5000"
+      CREDENTIAL_STORAGE_PATH: /config/credentials.json
+      DEVICE_CHECK_INTERVAL: "5000"
+      DEVICE_DISCOVERY_INTERVAL: "60000"
+      FRONTEND_PORT: "8645"
+      INCLUDE_PS4_DEVICES: "false"
+      MQTT_HOST: "192.168.50.229"
+      MQTT_PORT: "1883"
+      PSN_ACCOUNTS: /run/secrets/ps5_mqtt_account
+    secrets:
+      - ps5_mqtt_account
+  watchtower:
+    container_name: watchtower
+    restart: unless-stopped
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      WATCHTOWER_CLEANUP: 'true'
+      WATCHTOWER_SCHEDULE: '0 5 1 * * *'
   zwavejs:
     container_name: zwavejs
     restart: unless-stopped
@@ -34,19 +71,12 @@ services:
       - /dev/ttyACM0:/dev/ttyACM0
     volumes:
       - zwavejs_config:/usr/src/app/store
-  matter-server:
-    image: ghcr.io/home-assistant-libs/python-matter-server:stable
-    container_name: matter-server
-    restart: unless-stopped
-    network_mode: host
-    security_opt:
-      - apparmor:unconfined
-    volumes:
-      - matter_data:/data/
-      - /run/dbus:/run/dbus:ro
 volumes:
-  matter_data:
   hass_config:
   letsencrypt:
+  mqtt-data:
   nginx-data:
   zwavejs_config:
+secrets:
+  ps5_mqtt_account:
+    file: sony.conf
