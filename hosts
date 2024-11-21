@@ -55,6 +55,9 @@ docker2
 [photoprism]
 docker2
 
+[pihole]
+docker2
+
 [postgres]
 docker2
 
