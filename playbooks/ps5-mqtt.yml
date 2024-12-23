@@ -25,7 +25,7 @@
           DEVICE_CHECK_INTERVAL: "5000"
           DEVICE_DISCOVERY_INTERVAL: "60000"
           FRONTEND_PORT: "8645"
-          INCLUDE_PS4_DEVICES: "false"
+          INCLUDE_PS4_DEVICES: "true"
           MQTT_HOST: "192.168.1.17"
           MQTT_PORT: "1883"
 
