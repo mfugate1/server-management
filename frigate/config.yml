@@ -1,5 +1,5 @@
 mqtt:
-  host: 192.168.1.86
+  host: 192.168.1.17
 cameras:
   driveway:
     ffmpeg:
