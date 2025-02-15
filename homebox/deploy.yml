@@ -7,7 +7,7 @@
     - name: Create homebox container
       community.docker.docker_container:
         name: homebox
-        image: ghcr.io/hay-kot/homebox:latest
+        image: ghcr.io/sysadminsmedia/homebox:latest
         restart_policy: unless-stopped
         pull: true
         published_ports:
